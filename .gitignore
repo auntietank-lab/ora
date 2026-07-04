@@ -1,0 +1,7 @@
+.DS_Store
+
+# Old versions, screenshots, and notes kept locally only
+99 ARCHIVE/
+
+# Machine-local Claude Code permission settings
+.claude/settings.local.json

@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>feudalism is so out</title>
+
+<style>
+:root {
+  --bg-base: #050605;
+  --bg-surface: #161816;
+  --bg-elevated: #1E211E;
+  --text-primary: #E8E6DF;
+  --text-secondary: #A8A69B;
+  --text-tertiary: #6A6B63;
+  --accent-wheat: #DBC97A;
+  --accent-moss: #4D6B3A;
+  --accent-silver: #B8BCC2;
+  --accent-beige: #EDE4D6;
+  --bg: var(--bg-base);
+  --n:   var(--text-primary);
+  --w:   var(--accent-moss);
+  --n40: var(--text-tertiary);
+  --n20: rgba(232,230,223,.20);
+  --n08: rgba(232,230,223,.08);
+  --r:   var(--accent-silver);
+  --y:   var(--accent-wheat);
+  --l:   var(--accent-beige);
+  --f:   system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg-base); min-height: 100%; }
+body { font-family: var(--f); background: var(--bg-base); color: var(--n); font-size: 13px; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+/* ── Header ── */
+header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg-base); border-bottom: none;
+  padding: 20px 40px 0;
+  display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;
+}
+.ora-brand { display: flex; flex-direction: column; flex: 1; }
+.ora-word { font-size: 96px; font-weight: 600; line-height: .9; letter-spacing: -.03em; color: var(--n); }
+h1 { font-size: 14px; font-weight: 400; color: var(--text-secondary); letter-spacing: 0; padding-bottom: 10px; margin-top: 2px; white-space: normal; line-height: 1.4; }
+.hbtns {
+  position: absolute; top: 20px; right: 40px;
+  display: flex; flex-direction: column; gap: 2px;
+  align-items: flex-end;
+}
+.hbtns button {
+  padding: 0; border: none; border-radius: 0;
+  background: transparent; color: var(--text-secondary);
+  font: 600 14px var(--f); letter-spacing: .02em;
+  cursor: pointer; transition: color .12s;
+}
+.hbtns button:hover { color: var(--n); background: transparent; }
+#cbar { flex-basis: 100%; height: 2px; display: flex; margin: 0 -24px; }
+.cs { flex: 1; background: var(--n08); transition: background .2s; }
+.cs.w { background: var(--w); } .cs.r { background: var(--r); }
+.cs.y { background: var(--y); box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.cs.l { background: var(--l); }
+
+/* ── Banner ── */
+#bnr {
+  display: flex; align-items: center; gap: 8px;
+  height: 26px; padding: 0 12px;
+  margin-bottom: 24px;
+  background: var(--bg-base);
+  font-size: 11px; font-weight: 600;
+  overflow: hidden;
+  transition: opacity .7s ease;
+}
+#bnr.fading { opacity: 0; }
+#bnr.narrator #bmsg { font-style: italic; font-weight: 400; font-size: 10.5px; color: var(--n); letter-spacing: .01em; }
+#bnr.narrator #xbtn { display: none; }
+#bmsg { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#xbtn { background: none; border: none; cursor: pointer; font-size: 16px; color: var(--n40); font-family: var(--f); line-height: 1; flex-shrink: 0; }
+#xbtn:hover { color: var(--n); }
+
+/* Ticker inside the banner */
+.ticker-terms { display: none; white-space: nowrap; overflow: hidden; }
+#bnr.ticker-open .ticker-terms { display: block; flex: 1; animation: scroll-terms 20s linear infinite; }
+#bnr.ticker-open #bmsg { display: none; }
+.ticker-terms a { margin-right: 1.2em; color: var(--text-secondary); font-size: 11px; text-decoration: none; }
+.ticker-terms a:hover { text-decoration: underline; color: var(--accent-wheat); }
+.ticker-terms a::after { content: ' * '; color: var(--text-tertiary); }
+.ticker-terms a:last-child::after { content: none; }
+
+.ticker-toggle {
+  background: none; border: 1.5px solid var(--text-secondary); border-radius: 50%;
+  width: 18px; height: 18px; font-size: 11px; line-height: 1;
+  color: var(--text-secondary); cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+#bnr.ticker-open .ticker-toggle { order: 2; margin-left: auto; }
+
+@keyframes scroll-terms {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
+}
+
+/* ── Page layout ── */
+.page { display: flex; align-items: flex-start; }  /* pool-sidebar owns the left */
+#content { flex: 1; min-width: 0; overflow-y: visible; display: flex; flex-direction: column; }
+#day { padding: 0; flex: 1; overflow-y: visible; }
+
+.ef-del { background: none; border: none; cursor: pointer; font-size: 13px; color: var(--n20); padding: 0 2px; line-height: 1; }
+.ef-del:hover { color: var(--r); }
+input.wi {
+  border: none; background: transparent;
+  font-family: var(--f); color: var(--n); font-size: 12px;
+  padding: 2px 4px; border-radius: 3px; min-width: 0;
+}
+input.wi:focus { outline: 1.5px solid var(--n); background: var(--bg-elevated); }
+input.wi::placeholder { color: rgba(0,0,0,.28); }
+
+
+
+/* ── Summary ── */
+#sum { display: none; padding: 0 24px 60px; }
+#sum.on { display: block; }
+.si { border-top: 1px solid var(--n20); padding-top: 20px; }
+#sum h2 { font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--n40); margin-bottom: 14px; }
+.sr { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--n08); }
+.sd { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; background: var(--n08); }
+.sd.w { background: var(--w); } .sd.r { background: var(--r); }
+.sd.y { background: var(--y); box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+.sd.l { background: var(--l); }
+.sl { flex: 1; font-size: 13px; } .st { color: var(--n40); font-size: 12px; font-variant-numeric: tabular-nums; }
+.sbh { padding: 14px 0 4px; font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--n40); }
+.sbtns { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.sbtns button {
+  padding: 5px 14px; border: 1px solid var(--n20); border-radius: 999px;
+  background: var(--bg-surface); color: var(--n); font: 600 11px var(--f);
+  letter-spacing: .04em; cursor: pointer; transition: all .12s;
+}
+.sbtns button:hover { border-color: var(--n); background: var(--n); color: var(--bg-base); }
+
+/* ── Focus overlay ── */
+#fo {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: var(--bg-base);
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 28px; padding: 48px 32px;
+  transition: width .25s ease, padding .25s ease, background 1s ease;
+}
+#fo.on { display: flex; }
+#fo.m0, #fo.m2 { background: radial-gradient(ellipse at 50% 38%, rgba(90,70,150,.08) 0%, transparent 62%), var(--bg-base); }
+#fo.m1 { background: radial-gradient(ellipse at 50% 38%, rgba(160,130,45,.07) 0%, transparent 62%), var(--bg-base); }
+#fo-wbt { font-size: 12px; font-weight: 600; color: #fff; letter-spacing:.06em; text-transform: lowercase; }
+#fo-btns { display: flex; gap: 10px; }
+.fo-btn { padding: 5px 18px; border-radius: 999px; border: 1px solid var(--n20); background: transparent; color: var(--n); font: 600 11px var(--f); cursor: pointer; transition: background .12s, color .12s, border-color .12s; }
+.fo-btn:hover { background: var(--n08); color: var(--n); border-color: var(--n); }
+.fo-btn[data-state="running"] { background: var(--n); color: var(--bg-base); border-color: var(--n); }
+.fo-btn[data-state="paused"] { background: transparent; color: var(--n); border-color: var(--n); }
+#fo-hint { display: none; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55); letter-spacing: .06em; text-align: center; max-width: 320px; line-height: 1.7; }
+#fo.m1 #fo-hint, #fo.m2 #fo-hint { display: block; }
+#fo-topbar { display: flex; align-items: center; gap: 8px; }
+#fo-close-btn { background: none; border: none; color: rgba(255,255,255,.55); font-size: 20px; line-height: 1; cursor: pointer; padding: 0 2px; transition: color .12s; }
+#fo-close-btn:hover { color: #fff; }
+/* the crystal ball oracle should never float above an open focus window */
+#fo.on ~ #crystal-ball, #fo.on ~ #cb-panel, #fo.on ~ #ball-settings-panel { display: none; }
+
+/* ── Screen-reader utilities ── */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* ── Day progress ── */
+#day-progress { font-size: 10px; font-weight: 600; letter-spacing: .08em; color: var(--n40); padding: 3px 24px 8px; display: flex; gap: 8px; flex-basis: 100%; }
+
+/* ── Focus overlay: mini (docked) size ── */
+#fo.mini {
+  inset: auto; top: 0; left: 0; bottom: 0; right: auto; width: 260px;
+  padding: 32px 16px; gap: 18px; box-shadow: 4px 0 28px rgba(0,0,0,.45);
+  border-right: 1px solid var(--n08);
+}
+#fo.mini #fo-visual-wrap { transform: scale(.6); margin: -34px 0; }
+#fo.mini #fo-hint { display: none; }
+
+/* ── Undo toast ── */
+#undo-toast { display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); color: var(--n); padding: 9px 18px; border-radius: 999px; font: 600 12px var(--f); z-index: 400; gap: 10px; align-items: center; white-space: nowrap; }
+#undo-toast.on { display: flex; }
+#undo-btn { background: transparent; border: 1px solid rgba(255,255,255,.4); color: #fff; border-radius: 999px; padding: 2px 12px; font: 600 11px var(--f); cursor: pointer; }
+#undo-btn:hover { background: rgba(255,255,255,.15); }
+.timer-intent-prompt {
+  position: fixed; z-index: 500;
+  background: var(--bg-elevated); color: var(--n);
+  border: 1px solid var(--n20); border-radius: 999px;
+  padding: 4px 12px; font: 500 12px var(--f);
+  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+}
+.timer-intent-prompt::placeholder { color: var(--accent-beige); opacity: .9; font-style: italic; }
+.timer-intent-prompt:focus { outline: none; border-color: var(--n); }
+
+/* ── Hour block rows ── */
+#day { padding: 0; flex: 1; overflow-y: visible; }
+.hbr { display: flex; border-top: 1px solid var(--n20); }
+.hbr-l { width: 260px; flex-shrink: 0; padding: 14px 16px 14px 0; display: flex; flex-direction: column; gap: 8px; }
+.hbr-r { flex: 1; padding: 10px 0 10px 24px; min-width: 0; }
+.hbr-work { display: flex; flex-direction: column; }
+.mini-pill.buffer-pill {
+  border-color: var(--accent-beige);
+  color: var(--accent-beige);
+  opacity: 0.85;
+}
+.mini-pill.buffer-pill:hover {
+  border-color: var(--accent-silver);
+  color: var(--accent-silver);
+}
+.hbr-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.hbr-time-display { font-size: 18px; font-weight: 700; color: var(--n); }
+.hbr-intention-section { margin-top: 8px; }
+.hbr-timer-row { display: flex; gap: 4px; margin-top: 8px; }
+.hbr-intention { width: 100%; border: none; background: transparent; font-family: var(--f); color: var(--n); font-size: 13px; font-weight: 500; padding: 0; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--n20); cursor: text; }
+/* Higher specificity than input.wi::placeholder (0,1,1) so the beige placeholder
+   actually wins instead of silently losing to the dark default every time. */
+input.wi.hbr-intention::placeholder { color: var(--accent-beige); opacity: 1; font-style: italic; text-decoration: none; font-weight: 400; font-size: 12px; }
+.hbr-intention-area { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.hbr-intention-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+.hbr-intention-pills:empty { display: none; }
+.intent-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 999px; max-width: 140px;
+  font-size: 11px; font-weight: 500; color: #fff;
+}
+.intent-pill > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.intent-pill .ef-del { color: rgba(255,255,255,.75); font-size: 12px; }
+.intent-pill .ef-del:hover { color: #fff; }
+.hbr-pause { padding: 10px 0; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); border-top: 1px solid var(--n08); margin: 0; }
+
+/* ── Mini timer pills ── */
+.mini-pill { width: 39px; height: 22px; padding: 0 6px; box-sizing: border-box; border: 0.75px solid var(--n20); border-radius: 999px; background: transparent; color: var(--n); font: 700 11px/1 var(--f); font-variant-numeric: tabular-nums; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; transition: background .12s, color .12s, border-color .12s; }
+.mini-pill:not([data-s=done]):hover { background: var(--n08); color: var(--n); border-color: var(--n); }
+.mini-pill[data-s=running] { background: var(--n); color: var(--bg-base); border-color: var(--n); }
+.mini-pill[data-s=paused]  { background: transparent; color: var(--n); border-color: var(--n); }
+.mini-pill[data-s=done]    { opacity: .18; pointer-events: none; }
+.mini-pill[data-warn=true] { background: var(--r); border-color: var(--r); color: #fff; }
+
+/* ── Hour entries table ── */
+.he-table { width: 100%; border-collapse: collapse; }
+.he-table tr { border-bottom: 1px solid var(--n08); }
+.he-table tr:last-child { border-bottom: none; }
+.he-table td { padding: 5px 8px 5px 0; vertical-align: middle; }
+.he-table td:last-child { padding-right: 0; }
+.he-time { font-variant-numeric: tabular-nums; font-weight: 400; font-size: 11px; color: var(--n40); white-space: nowrap; width: 44px; letter-spacing: .02em; }
+.he-client-td { font-size: 13px; font-weight: 600; color: var(--n); min-width: 80px; max-width: 130px; }
+.he-client-td .wi { font-weight: 600; color: var(--n); }
+.he-tag-td { white-space: nowrap; }
+.he-tag-pill { display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 999px; font: 600 10px var(--f); white-space: nowrap; cursor: pointer; border: none; transition: opacity .12s; letter-spacing: .04em; text-transform: lowercase; }
+.he-tag-pill:hover { opacity: .78; }
+.he-tag-pill[data-col=w] { background: var(--w); color: #fff; }
+.he-tag-pill[data-col=r] { background: var(--r); color: rgba(0,0,0,.72); }
+.he-tag-pill[data-col=y] { background: var(--y); color: rgba(0,0,0,.72); box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); }
+.he-tag-pill[data-col=l] { background: var(--l); color: rgba(0,0,0,.72); }
+.he-tag-pill:not([data-col]) { background: transparent; color: var(--n40); font-size: 16px; font-weight: 300; padding: 0 4px; }
+.he-notes-td { color: var(--n40); font-size: 12px; font-weight: 400; }
+.he-notes-td .wi { color: var(--n40); font-size: 12px; }
+.he-table .wi { font-size: inherit; padding: 1px 4px; }
+.he-plus-td { width: 20px; text-align: right; }
+.he-plus-td .ef-del { color: var(--n20); font-size: 12px; }
+.he-plus-td .ef-del:hover { color: var(--n); }
+
+/* ── Traces header + inline entry row (replaces old content-header + logged-sticky) ── */
+.traces-header {
+  padding: 36px 24px 8px 24px;
+  text-indent: 4px;
+  font-size: 26px; font-weight: 600; color: var(--n);
+  cursor: pointer;
+}
+#content > *:not(.traces-header) {
+  padding-left: 24px;
+}
+.traces-entry-row {
+  padding: 8px 24px;
+  display: flex; align-items: flex-start; gap: 8px;
+  border-bottom: 0.1px solid var(--n20);
+}
+.traces-add-btn {
+  background: none; border: none;
+  font-size: 20px; font-weight: 300; color: var(--n40);
+  cursor: pointer; line-height: 1; padding: 0;
+}
+.traces-add-btn:hover { color: var(--n); }
+.traces-entry-form {
+  display: flex; gap: 6px; align-items: center; flex: 1;
+}
+.trace-input,
+.trace-input::placeholder {
+  color: var(--n);
+  font-family: var(--f);
+  font-size: 12px;
+}
+.trace-input::placeholder {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+.trace-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--n20);
+  padding: 3px 6px;
+  min-width: 0;
+}
+.trace-input:focus {
+  outline: none;
+  border-bottom-color: var(--n);
+}
+.trace-save-btn {
+  padding: 2px 10px; border: 1px solid var(--n20); border-radius: 999px;
+  background: var(--bg-surface); color: var(--n);
+  font: 600 11px var(--f); cursor: pointer; flex-shrink: 0;
+}
+.trace-save-btn:hover { background: var(--n); color: var(--bg-base); }
+.lt-add-row { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: nowrap; }
+.lt-add-row .lt-input { border: none; background: var(--n08); font-family: var(--f); color: var(--n); font-size: 12px; padding: 3px 8px; border-radius: 5px; min-width: 0; }
+.lt-add-row .lt-input:focus { outline: 1.5px solid var(--n); background: var(--bg-elevated); }
+.lt-add-row .lt-input::placeholder { color: var(--n40); }
+.lt-add-row .lt-time-input { width: 80px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.lt-add-row .lt-input:not(.lt-time-input) { flex: 1; }
+
+.lt-input { border: none; background: transparent; font-family: var(--f); color: var(--n); font-size: 12px; width: 100%; padding: 2px 4px; border-radius: 3px; min-width: 40px; }
+.lt-input:focus { outline: 1.5px solid var(--n); background: var(--bg-elevated); }
+.lt-input::placeholder { color: rgba(0,0,0,.28); }
+.lt-time-input { width: 72px; font-variant-numeric: tabular-nums; }
+.lt-save-btn { padding: 2px 10px; border: 1px solid var(--n20); border-radius: 999px; background: var(--bg-surface); color: var(--n); font: 600 11px var(--f); cursor: pointer; transition: all .1s; }
+.lt-save-btn:hover { border-color: var(--n); background: var(--n); color: #fff; }
+
+/* ── Focus visual: background flower/spirals + foreground clock hands ── */
+#fo-readout { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+#fo-cd-text {
+  font-size: 56px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 10px rgba(0,0,0,.5); letter-spacing: -.02em;
+}
+#fo-task { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6); text-align: center; max-width: 280px; }
+#fo-task:empty { display: none; }
+/* grain over the whole window, on top of everything */
+#fo-grain {
+  position: absolute; inset: 0; z-index: 50; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: .22;
+  mix-blend-mode: overlay;
+}
+#fo-visual-wrap { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; transition: transform .25s ease, margin .25s ease; }
+/* background: faint spiralling orbit lines, dotted specks, a few static little balls */
+#fo-bg-spiral { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* New – serif asterisk replacing the old petals */
+#fo-flower-spin {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: Baskerville, "Times New Roman", "Georgia", serif;
+  font-size: 120px;
+  font-weight: normal;
+  line-height: 1;
+  color: rgba(147, 166, 221, 0.85); /* m0 default */
+  animation: flower-spin 22s linear infinite;
+}
+/* m1 (short timer) – warm tone */
+#fo.m1 #fo-flower-spin {
+  color: rgba(219, 201, 122, 0.85);
+}
+/* optional subtle scale on rest */
+#fo-flower-spin::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+@keyframes flower-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+/* foreground: three bare clock hands, no dial — pivoting from the shared centre */
+#fo-hands { position: absolute; inset: 0; }
+.fo-hand { position: absolute; top: 50%; left: 50%; width: 2px; border-radius: 2px; transform-origin: 50% 100%; }
+#fo-hand-a { height: 100px; margin: -100px 0 0 -1px; background: rgba(255,255,255,.8); animation: hand-cw 50s linear infinite; }
+#fo-hand-b { height: 78px; margin: -78px 0 0 -1px; background: rgba(255,255,255,.55); animation: hand-ccw 160s linear infinite; }
+#fo-hand-c { height: 56px; margin: -56px 0 0 -1px; background: rgba(255,255,255,.95); animation: hand-tick 24s steps(1) infinite; }
+#fo-hand-pivot { position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: rgba(255,255,255,.85); }
+@keyframes hand-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes hand-ccw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+@keyframes hand-tick {
+  0%   { transform: rotate(0deg); }
+  8%   { transform: rotate(30deg); }
+  20%  { transform: rotate(-30deg); }
+  90%  { transform: rotate(-30deg); }
+  100% { transform: rotate(0deg); }
+}
+
+
+/* ── Pool sidebar ── */
+.page { display: flex; align-items: flex-start; max-width: none; margin: 80px 0 0 0; }
+#pool-sidebar {
+  width: 260px; flex-shrink: 0;
+  padding: 36px 20px 40px 40px;
+  position: sticky; top: 0; max-height: 100vh; overflow-y: auto;
+}
+.pool-sb-hdr { margin-bottom: 12px; }
+.main-tasks-hdr { font-size: 26px; font-weight: 600; color: var(--n); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.pool-sb-count { font-weight: 400; font-size: 12px; color: var(--n40); }
+/* Staggered waterfall pills */
+#pool-sb-pills { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+.pool-sb-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 12px;
+  font: 500 13px/1.35 var(--f); cursor: pointer;
+  border: none; text-align: left; width: 100%; max-width: 100%;
+  background: #888; color: #fff;  /* overridden inline */
+  transition: opacity .12s; position: relative;
+  align-self: flex-start;
+  min-height: 32px;
+}
+/* pool-sb-pill colours applied inline via VIRIDIS array */
+.pool-sb-pill:hover { opacity: .82; }
+.pool-sb-pill > span:not(.ef-del) { white-space: normal; word-break: break-word; line-height: 1.35; padding: 2px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Wave container ──────────────────────────────────────────────*/
+#wave-container {
+  position: relative; width: 100%;
+  height: 33vh; min-height: 200px; max-height: 360px;
+  background: var(--bg-base); overflow: hidden; flex-shrink: 0;
+  cursor: crosshair;
+}
+#wave-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#wave-knots { position: absolute; inset: 0; pointer-events: none; }
+.wave-knot-marker {
+  position: absolute; transform: translate(-50%,-50%);
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #DBC97A; border: none; cursor: grab;
+  pointer-events: auto; transition: transform .1s;
+}
+.wave-knot-marker:hover { transform: translate(-50%,-50%) scale(1.4); }
+.wave-knot-marker.dragging { cursor: grabbing; transform: translate(-50%,-50%) scale(1.4); }
+
+/* ── Slaydar overlay ─────────────────────────────────────────────*/
+#slaydar-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.8); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+#slaydar-panel {
+  background: #121412; border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; padding: 28px; width: min(520px,90vw);
+  position: relative; display: flex; flex-direction: column; gap: 18px;
+}
+#slaydar-close {
+  position: absolute; top: 14px; right: 16px;
+  background: none; border: none; font-size: 22px; cursor: pointer;
+  color: rgba(255,255,255,.5); line-height: 1;
+}
+#slaydar-close:hover { color: #fff; }
+#slaydar-panel h2 { margin: 0; font-size: 18px; font-weight: 600; color: #fff; letter-spacing: .02em; }
+#radar-svg { width: 240px; height: 240px; align-self: center; }
+.sl-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: rgba(255,255,255,.7);
+  min-height: 56px;
+}
+.sl-lbl { width: 156px; flex-shrink: 0; }
+.sl-in {
+  flex: 1;
+  accent-color: var(--accent-wheat);
+  height: 8px;
+}
+.sl-in::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--accent-wheat);
+  border: 2px solid var(--accent-wheat);
+  border-radius: 3px;
+  cursor: pointer;
+  transform: rotate(45deg);
+}
+.sl-in::-moz-range-thumb {
+  width: 14px; height: 14px;
+  background: var(--accent-wheat);
+  border: 2px solid var(--accent-wheat);
+  border-radius: 3px;
+  cursor: pointer;
+  transform: rotate(45deg);
+}
+.sl-val { width: 28px; text-align: right; font-variant-numeric: tabular-nums; color: #fff; }
+/* Radar axes and polygon */
+#radar-axes line, #radar-axes circle { stroke: rgba(255,255,255,.14); }
+#radar-axes text { fill: rgba(255,255,255,.6); font-size: 12px; }
+#radar-poly-bg { fill: rgba(219,201,122,0.12); stroke: none; }
+#radar-poly { fill: rgba(219,201,122,0.25); stroke: rgba(219,201,122,0.5); stroke-width: 1; }
+#v-display {
+  font-size: 15px; font-weight: 600; color: var(--accent-wheat);
+  text-align: center; letter-spacing: .04em;
+}
+#save-knot-btn {
+  align-self: center; padding: 7px 22px; border-radius: 999px;
+  background: var(--accent-wheat); color: #121412; border: none; font: 600 13px var(--f);
+  cursor: pointer; transition: opacity .12s;
+}
+#save-knot-btn:hover { opacity: .82; }
+
+/* ── Break ticker ─────────────────────────────────────────────────*/
+.break-ticker {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 2000;
+  height: 20px; background: var(--bg-elevated);
+  overflow: hidden; white-space: nowrap;
+}
+.break-ticker.show { display: block; }
+#break-ticker-text {
+  display: inline-block; padding-left: 100%;
+  font-weight: 600; font-size: 18px; line-height: 20px;
+  color: var(--text-secondary);
+  animation: ticker-scroll 14s linear infinite;
+}
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #break-ticker-text { animation: none; }
+}
+
+/* ── Crystal ball ────────────────────────────────────────────────*/
+#crystal-ball {
+  position: fixed; bottom: auto; top: auto; left: auto; z-index: 300;
+  right: -140px; /* start off-screen; JS sets top + right (via .roll-in) */
+  transition: right 1.8s cubic-bezier(.22,.61,.36,1), box-shadow .3s, transform .2s;
+  width: 128px; height: 128px; border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255,255,255,.25) 0%, transparent 15%),
+    radial-gradient(circle at 70% 76%, rgba(180,80,50,.3) 0%, transparent 50%),
+    radial-gradient(circle at 20% 72%, rgba(200,140,100,.15) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(160,70,40,.2) 0%, rgba(14,15,14,.9) 78%);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 40px rgba(180,60,30,.15),
+    inset 0 0 20px rgba(255,255,255,.08),
+    inset 0 -10px 20px rgba(140,50,30,.15),
+    inset 0 8px 16px rgba(255,255,255,.06);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(200,160,140,.25);
+  overflow: hidden;
+  animation: orb-glow 5s ease-in-out infinite;
+}
+/* .roll-in's target `right` is set inline by runIntroAnimation(), computed from
+   hourToX(0,W) so the ball ends up centred directly above the wave's "now" x-position
+   rather than a fixed 2/3-viewport mark. */
+@keyframes rabbit-hop {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  25%  { transform: translate(-20px, -60px) scale(1); }
+  50%  { transform: translate(-50px, -120px) scale(1); }
+  75%  { transform: translate(-80px, -160px) scale(1); }
+  100% { transform: translate(-110px, -200px) scale(0.8); opacity: 0; }
+}
+#crystal-ball::before {
+  content: ''; position: absolute; inset: 8px; border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    rgba(200,120,80,.4), rgba(160,80,50,.2), rgba(220,160,130,.35),
+    rgba(180,100,70,.25), rgba(200,120,80,.4));
+  filter: blur(10px); opacity: .45; mix-blend-mode: screen;
+  animation: orb-swirl 20s linear infinite;
+  pointer-events: none;
+}
+#crystal-ball::after {
+  content: '';
+  position: absolute; inset: 12px; border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 35%,
+    rgba(237,228,214,.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 65%,
+    rgba(237,228,214,.1) 0%, transparent 50%);
+  filter: blur(4px);
+  opacity: .6;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: liquid-shift 8s ease-in-out infinite alternate;
+}
+@keyframes liquid-shift {
+  0%   { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(5deg) scale(1.05); }
+}
+#crystal-ball:hover { transform: scale(1.06); }
+@keyframes orb-glow {
+  0%,100% { box-shadow: 0 0 40px rgba(180,60,30,.15), inset 0 0 20px rgba(255,255,255,.08), inset 0 -10px 20px rgba(140,50,30,.15), inset 0 8px 16px rgba(255,255,255,.06); }
+  50% { box-shadow: 0 0 56px rgba(180,60,30,.28), inset 0 0 26px rgba(255,255,255,.12), inset 0 -10px 24px rgba(140,50,30,.22), inset 0 8px 16px rgba(255,255,255,.1); }
+}
+@keyframes orb-swirl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+#cb-count {
+  position: relative; z-index: 1;
+  font-size: 20px; font-weight: 700; color: rgba(237,228,214,.9);
+  font-variant-numeric: tabular-nums; pointer-events: none;
+  text-shadow: 0 0 10px rgba(219,201,122,.6);
+}
+#cb-panel {
+  display: none; position: fixed; bottom: 176px; right: 40px; z-index: 299;
+  width: 320px; max-height: 70vh; overflow-y: auto; background: var(--bg-elevated);
+  border: 1px solid rgba(184,188,194,.18);
+  border-radius: 16px; padding: 20px; flex-direction: column; gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.cb-sidejester-btn {
+  background: none; border: 1px solid rgba(184,188,194,.25);
+  border-radius: 50%; width: 28px; height: 28px;
+  font-size: 14px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  transition: border-color .15s;
+}
+.cb-sidejester-btn:hover { border-color: var(--accent-silver); }
+.sidejester-panel {
+  display: none; position: fixed; bottom: 176px; right: 40px; z-index: 299;
+  width: 320px; max-height: 60vh; overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(184,188,194,.18);
+  border-radius: 16px; padding: 20px; flex-direction: column; gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+#sj-budget { font-size: 12px; color: rgba(255,255,255,.6); }
+.sj-add-row { display: flex; gap: 6px; align-items: center; }
+.sj-add-row input {
+  border: 1px solid rgba(255,255,255,.15); border-radius: 999px;
+  padding: 4px 10px; font: 500 12px var(--f); color: #fff;
+  background: rgba(255,255,255,.05); flex: 1;
+}
+.sj-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08);
+  font-size: 12px; color: rgba(255,255,255,.8);
+}
+.sj-item-meta { font-size: 10px; color: rgba(255,255,255,.4); }
+.sj-item-del { background: none; border: none; color: rgba(255,255,255,.3); cursor: pointer; font-size: 14px; }
+.sj-item-del:hover { color: #fff; }
+.cb-task-card {
+  padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.05); display: flex; flex-direction: column; gap: 6px;
+}
+.cb-task-name { font-size: 13px; font-weight: 600; color: #fff; }
+.cb-task-meta { font-size: 11px; color: rgba(255,255,255,.45); }
+.cb-start-btn {
+  align-self: flex-start; padding: 4px 14px; border-radius: 999px;
+  background: transparent; color: var(--n); border: 1px solid var(--n20); font: 600 11px var(--f);
+  cursor: pointer; margin-top: 2px; transition: background .12s, color .12s, border-color .12s;
+}
+.cb-start-btn:hover { background: var(--n08); color: var(--n); border-color: var(--n); }
+.cb-start-btn[data-state="running"] { background: var(--n); color: var(--bg-base); border-color: var(--n); }
+.cb-start-btn[data-state="paused"] { background: transparent; color: var(--n); border-color: var(--n); }
+.cb-header { display: flex; align-items: center; justify-content: space-between; }
+.cb-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.5); letter-spacing: .08em; text-transform: uppercase; }
+.cb-close { background: none; border: none; color: rgba(255,255,255,.4); font-size: 18px; cursor: pointer; line-height: 1; }
+.cb-v-bar { height: 3px; border-radius: 2px; background: linear-gradient(90deg,#4D6B3A,#B8BCC2,#DBC97A); opacity: .5; }
+.cb-add-form { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.cb-add-form > input[type="text"] {
+  border: 1px solid rgba(255,255,255,.15); border-radius: 999px;
+  padding: 5px 14px; font: 500 12px var(--f); color: #fff; background: rgba(255,255,255,.05);
+}
+.cb-add-form > input[type="text"]:focus { outline: 1.5px solid var(--accent-wheat); border-color: var(--accent-wheat); }
+.cb-add-form > input[type="text"]::placeholder { color: rgba(255,255,255,.4); }
+.cb-add-form .cb-start-btn { align-self: center; margin-top: 2px; }
+.cb-section-title { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); padding-top: 4px; }
+.cb-pool-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 6px 0; font-size: 12px; color: rgba(255,255,255,.8);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+/* ── Ball settings panel ─────────────────────────────────────────*/
+#ball-settings-panel {
+  display: none; position: fixed; bottom: 176px; right: 40px; z-index: 299;
+  width: 300px; background: var(--bg-elevated);
+  border: 1px solid rgba(184,188,194,.18);
+  border-radius: 16px; padding: 20px; flex-direction: column; gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.bs-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: rgba(255,255,255,.7); }
+.bs-row label { flex: 1; }
+.bs-row input { width: 92px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.05); color: #fff; border-radius: 5px; padding: 3px 6px; font: inherit; font-variant-numeric: tabular-nums; }
+.bs-row input:focus { outline: 1.5px solid var(--accent-wheat); }
+input[type="time"] {
+  color-scheme: dark;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 5px;
+  padding: 3px 6px;
+  font: inherit;
+}
+.bs-section-title { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); padding-top: 4px; }
+.bs-win-list { display: flex; flex-direction: column; gap: 6px; }
+.bs-win-row { display: flex; align-items: center; gap: 8px; }
+.bs-win-row input.bs-win-start { width: 92px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.05); color: #fff; border-radius: 5px; padding: 3px 6px; font: inherit; font-variant-numeric: tabular-nums; }
+.bs-win-row input.bs-win-start:focus { outline: 1.5px solid var(--accent-wheat); }
+.bs-win-plus { font-size: 11px; color: rgba(255,255,255,.5); flex: 1; }
+.bs-add-btn {
+  align-self: flex-start; padding: 3px 12px; border-radius: 999px;
+  border: 1px dashed rgba(255,255,255,.25); background: none; color: rgba(255,255,255,.7);
+  font: 600 11px var(--f); cursor: pointer; transition: all .12s;
+}
+.bs-add-btn:hover { border-style: solid; border-color: var(--accent-wheat); color: var(--accent-wheat); }
+.bs-save-btn {
+  align-self: center; padding: 6px 20px; border-radius: 999px;
+  background: var(--accent-moss); color: #fff; border: none; font: 600 12px var(--f);
+  cursor: pointer; transition: opacity .12s;
+}
+.bs-save-btn:hover { opacity: .82; }
+
+/* ── Task pill "…" actions popover ──────────────────────────────────*/
+.pill-more {
+  background: none; border: none; color: inherit; opacity: .65;
+  font-size: 12px; line-height: 1; cursor: pointer; padding: 0 2px; flex-shrink: 0;
+}
+.pill-more:hover { opacity: 1; }
+#task-actions-panel {
+  display: none; position: fixed; z-index: 400;
+  width: 260px; background: var(--bg-elevated);
+  border: 1px solid rgba(184,188,194,.18);
+  border-radius: 14px; padding: 16px; flex-direction: column; gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.sidequest-card {
+  position: fixed; z-index: 400;
+  width: 260px; background: var(--bg-elevated);
+  border: 1px solid var(--accent-silver);
+  border-radius: 14px; padding: 16px; flex-direction: column; gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.sidequest-card.show { display: flex; }
+.sidequest-card input.wi, .sidequest-card textarea.wi {
+  width: 100%; background: rgba(255,255,255,.05); color: var(--n);
+  border: 1px solid rgba(255,255,255,.15); border-radius: 6px;
+  padding: 5px 8px; font: 500 12px var(--f);
+}
+.sidequest-card textarea.wi { resize: vertical; min-height: 40px; }
+.sidequest-card input.wi::placeholder, .sidequest-card textarea.wi::placeholder { color: rgba(255,255,255,.4); }
+.sq-fun-label, .sq-important-label { font-size: 12px; color: rgba(255,255,255,.7); display: flex; align-items: center; gap: 6px; }
+.sq-budget-info { font-size: 11px; color: rgba(255,255,255,.5); }
+.sq-budget-info.over { color: var(--accent-silver); font-weight: 700; }
+.tap-title { font-size: 13px; font-weight: 700; color: #fff; padding-right: 16px; overflow-wrap: break-word; }
+.tap-close { position: absolute; top: 10px; right: 12px; background: none; border: none; color: rgba(255,255,255,.4); font-size: 16px; cursor: pointer; line-height: 1; }
+.tap-close:hover { color: #fff; }
+.tap-row { display: flex; gap: 8px; }
+.tap-btn {
+  flex: 1; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.05); color: #fff; font: 600 11px var(--f); cursor: pointer;
+  transition: background .12s;
+}
+.tap-btn:hover { background: rgba(255,255,255,.14); }
+.tap-btn.danger { border-color: rgba(216,105,105,.45); color: #e08a8a; }
+.tap-btn.primary { background: var(--accent-moss); border-color: var(--accent-moss); }
+.tap-edit-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,.6); }
+.tap-edit-row label { width: 64px; flex-shrink: 0; }
+.tap-edit-row input, .tap-edit-row select {
+  flex: 1; min-width: 0; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 5px; color: #fff; padding: 3px 6px; font: inherit;
+}
+.tap-edit-row input:focus, .tap-edit-row select:focus { outline: 1.5px solid var(--accent-wheat); }
+
+/* ── Pool pill category dot ──────────────────────────────────────*/
+.pill-cat-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-left: 4px;
+}
+.pill-cat-dot.should { background: rgba(255,255,255,.35); }
+.pill-cat-dot.enjoyable { background: var(--accent-wheat); }
+
+/* ── Mobile ── */
+@media (max-width: 680px) {
+  h1 { font-size: 17px; }
+}
+
+
+</style>
+</head>
+<body>
+
+<div id="timer-announce" class="sr-only" role="status" aria-live="polite"></div>
+<div id="undo-toast"><span>Entry deleted</span><button id="undo-btn">Undo</button></div>
+<input type="text" id="timer-intent-prompt" class="timer-intent-prompt" placeholder="what are you working on?" style="display:none;">
+<header>
+  <div class="ora-brand">
+    <div class="ora-word">ORA</div>
+    <h1>A calm but opinionated space for brains<br>born with neither talent nor particular<br>interest in time or organisation.</h1>
+  </div>
+  <div id="day-progress"><span id="dp-elapsed"></span></div>
+  <div class="hbtns">
+    <button id="btn-slaydar">+ Slaydar</button>
+    <button id="btn-rev">+ Review</button>
+    <button id="btn-sum">+ Summary</button>
+    <button id="btn-rst">+ Reset</button>
+    <button id="btn-settings">+ Settings</button>
+  </div>
+  <div id="cbar"></div>
+</header>
+
+<section id="wave-container" aria-label="Time wave">
+  <canvas id="wave-canvas"></canvas>
+  <div id="wave-knots"></div>
+</section>
+
+<div id="bnr">
+  <div id="ticker-terms" class="ticker-terms">
+    <a href="https://en.wikipedia.org/wiki/Executive_dysfunction" target="_blank" rel="noopener">executive dysfunction</a>
+    <a href="https://en.wikipedia.org/wiki/Hyperfocus" target="_blank" rel="noopener">hyperfocus</a>
+    <a href="https://en.wikipedia.org/wiki/Working_memory" target="_blank" rel="noopener">working memory</a>
+    <a href="https://en.wikipedia.org/wiki/Emotional_dysregulation" target="_blank" rel="noopener">emotional dysregulation</a>
+    <a href="https://en.wikipedia.org/wiki/Time_perception" target="_blank" rel="noopener">time blindness</a>
+    <a href="https://en.wikipedia.org/wiki/Rejection_sensitive_dysphoria" target="_blank" rel="noopener">RSD</a>
+    <a href="https://en.wikipedia.org/wiki/Dopamine" target="_blank" rel="noopener">dopamine</a>
+    <span id="jester-emoji" style="display:none;">🤡</span>
+  </div>
+  <span id="bmsg"></span>
+  <button id="ticker-toggle" class="ticker-toggle" aria-label="Toggle ADHD info">i</button>
+  <button id="xbtn" aria-label="Dismiss notification">×</button>
+</div>
+
+
+<div id="fo">
+  <div id="fo-grain" aria-hidden="true"></div>
+  <div id="fo-topbar">
+    <button class="fo-btn" id="fo-size-btn" aria-label="Dock timer to sidebar size">dock</button>
+    <button id="fo-close-btn" aria-label="Close timer window">×</button>
+  </div>
+  <div id="fo-readout">
+    <span id="fo-wbt"></span>
+    <div id="fo-cd-text">—</div>
+    <div id="fo-task"></div>
+  </div>
+  <div id="fo-visual-wrap">
+    <svg id="fo-bg-spiral" viewBox="0 0 220 220" aria-hidden="true">
+      <path d="M 115.0 110.0 L 115.1 110.4 L 115.1 110.8 L 115.1 111.2 L 115.0 111.6 L 115.0 112.0 L 114.8 112.4 L 114.7 112.8 L 114.5 113.2 L 114.3 113.6 L 114.1 114.0 L 113.8 114.4 L 113.5 114.7 L 113.2 115.1 L 112.8 115.4 L 112.4 115.6 L 112.0 115.9 L 111.6 116.1 L 111.1 116.3 L 110.6 116.4 L 110.1 116.6 L 109.6 116.6 L 109.1 116.7 L 108.5 116.7 L 108.0 116.6 L 107.5 116.5 L 106.9 116.4 L 106.4 116.2 L 105.8 116.0 L 105.3 115.8 L 104.8 115.4 L 104.3 115.1 L 103.9 114.7 L 103.4 114.3 L 103.0 113.8 L 102.7 113.3 L 102.3 112.8 L 102.0 112.2 L 101.8 111.6 L 101.6 110.9 L 101.4 110.3 L 101.3 109.6 L 101.2 108.9 L 101.2 108.2 L 101.3 107.5 L 101.4 106.8 L 101.5 106.1 L 101.7 105.4 L 102.0 104.7 L 102.3 104.0 L 102.7 103.3 L 103.2 102.7 L 103.7 102.1 L 104.2 101.5 L 104.8 101.0 L 105.5 100.5 L 106.2 100.0 L 107.0 99.6 L 107.7 99.2 L 108.6 98.9 L 109.4 98.7 L 110.3 98.6 L 111.2 98.5 L 112.1 98.4 L 113.1 98.5 L 114.0 98.6 L 114.9 98.8 L 115.9 99.1 L 116.8 99.4 L 117.7 99.8 L 118.6 100.3 L 119.4 100.9 L 120.3 101.5 L 121.0 102.3 L 121.8 103.0 L 122.4 103.9 L 123.0 104.8 L 123.6 105.8 L 124.1 106.8 L 124.5 107.9 L 124.8 109.0 L 125.0 110.1 L 125.2 111.3 L 125.2 112.5 L 125.2 113.8 L 125.1 115.0 L 124.8 116.2 L 124.5 117.5 L 124.1 118.7 L 123.5 119.9 L 122.9 121.0 L 122.2 122.2 L 121.3 123.3 L 120.4 124.3 L 119.4 125.3 L 118.3 126.2 L 117.1 127.0 L 115.9 127.7 L 114.5 128.4 L 113.1 128.9 L 111.7 129.4 L 110.2 129.7 L 108.6 129.9 L 107.0 130.0 L 105.4 130.0 L 103.8 129.9 L 102.2 129.6 L 100.5 129.2 L 98.9 128.6 L 97.3 128.0 L 95.8 127.2 L 94.3 126.2 L 92.9 125.2 L 91.5 124.0 L 90.2 122.7 L 89.0 121.2 L 87.9 119.7 L 86.9 118.1 L 86.0 116.3 L 85.2 114.5 L 84.6 112.6 L 84.1 110.7 L 83.8 108.6 L 83.6 106.5 L 83.6 104.4 L 83.8 102.3 L 84.1 100.2 L 84.6 98.0 L 85.3 95.9 L 86.1 93.8 L 87.2 91.8 L 88.4 89.8 L 89.7 87.8 L 91.2 86.0 L 92.9 84.3 L 94.8 82.7 L 96.8 81.2 L 98.9 79.8 L 101.1 78.6 L 103.5 77.6 L 106.0 76.8 L 108.6 76.1 L 111.2 75.6 L 113.9 75.3 L 116.7 75.3 L 119.5 75.4 L 122.3 75.8 L 125.1 76.4 L 127.9 77.3 L 130.7 78.3 L 133.4 79.6 L 136.1 81.1 L 138.6 82.9 L 141.0 84.9 L 143.3 87.0 L 145.5 89.4 L 147.5 92.0 L 149.3 94.7 L 150.9 97.7 L 152.3 100.8 L 153.5 104.0 L 154.5 107.4 L 155.1 110.8 L 155.6 114.4 L 155.7 118.0 L 155.5 121.7 L 155.1 125.4 L 154.4 129.1 L 153.3 132.8 L 152.0 136.5 L 150.4 140.0 L 148.4 143.5 L 146.2 146.9 L 143.7 150.2 L 140.9 153.2 L 137.8 156.1 L 134.5 158.8 L 130.9 161.2 L 127.1 163.4 L 123.1 165.3 L 118.9 167.0 L 114.5 168.3 L 109.9 169.2 L 105.3 169.9 L 100.5 170.1 L 95.7 170.0 L 90.8 169.5 L 85.9 168.6 L 81.1 167.4 L 76.2 165.7 L 71.5 163.6 L 66.9 161.2 L 62.4 158.3 L 58.1 155.1 L 54.0 151.5 L 50.1 147.5 L 46.5 143.2 L 43.2 138.6 L 40.3 133.6 L 37.7 128.4 L 35.5 122.9 L 33.7 117.2 L 32.3 111.2 L 31.4 105.1 L 30.9 98.9 L 30.9 92.6 L 31.5 86.2 L 32.5 79.7 L 34.1 73.3 L 36.2 67.0 L 38.8 60.7 L 41.9 54.6 L 45.5 48.6 L 49.7 42.9 L 54.3 37.4 L 59.4 32.3 L 65.0 27.5 L 71.0 23.1 L 77.4 19.1 L 84.2 15.5 L 91.4 12.5"
+        fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1" stroke-linecap="round"/>
+    </svg>
+    <div id="fo-flower-spin" aria-hidden="true">∗</div>
+    <div id="fo-hands" aria-hidden="true">
+      <span id="fo-hand-a" class="fo-hand"></span>
+      <span id="fo-hand-b" class="fo-hand"></span>
+      <span id="fo-hand-c" class="fo-hand"></span>
+      <span id="fo-hand-pivot"></span>
+    </div>
+  </div>
+  <div id="fo-btns">
+    <button class="fo-btn" id="fo-pause-btn">pause</button>
+    <button class="fo-btn" id="fo-stop-btn">stop</button>
+  </div>
+  <p id="fo-hint">finish some beacons, log what you have done, and transition</p>
+</div>
+<div class="page">
+  <div id="pool-sidebar">
+    <div class="pool-sb-hdr">
+      <h3 class="main-tasks-hdr">Beacons <span class="pool-sb-count" id="pool-sb-count"></span></h3>
+    </div>
+    <div id="pool-sb-pills"></div>
+  </div>
+  <div id="content">
+    <a class="traces-header" href="#hbr-1">Traces</a>
+    <div class="traces-entry-row" id="traces-entry-row">
+      <button id="traces-add-btn" class="traces-add-btn" aria-label="Add logged entry">+</button>
+      <div class="traces-entry-form" id="traces-entry-form" style="display:none;">
+        <input class="wi trace-input" type="time" id="trace-start" placeholder="08:00">
+        <input class="wi trace-input" type="text" id="trace-est" placeholder="15'">
+        <select class="wi trace-input" id="trace-type">
+          <option value="">—</option>
+          <option value="w">work</option>
+          <option value="r">disc</option>
+          <option value="y">test</option>
+          <option value="l">lore</option>
+        </select>
+        <input class="wi trace-input" type="text" id="trace-client" placeholder="Client A">
+        <input class="wi trace-input" type="text" id="trace-notes" placeholder="what happened?">
+        <button class="trace-save-btn" id="trace-save-btn">add</button>
+      </div>
+    </div>
+    <main id="day"></main>
+    <section id="sum">
+      <div class="si">
+        <h2>Today</h2>
+        <div id="sbody"></div>
+        <div class="sbtns">
+          <button id="btn-csv">Export CSV</button>
+          <button id="btn-cpy">Copy summary</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="crystal-ball" aria-label="Crystal ball oracle"><span id="cb-count"></span></div>
+<div id="cb-panel" role="dialog" aria-modal="true"></div>
+<div id="sidejester-panel" class="sidejester-panel" role="dialog" aria-modal="true" style="display:none;">
+  <div class="cb-header">
+    <span class="cb-title">Side-Jester</span>
+    <button class="cb-close" aria-label="Close">×</button>
+  </div>
+  <div id="sj-budget">Budget: <span id="sj-remaining"></span> min remaining</div>
+  <div id="sj-list"></div>
+  <div class="sj-add-row">
+    <input id="sj-add-text" type="text" placeholder="what did you do?">
+    <input id="sj-add-dur" type="number" value="15" min="5" step="5" style="width:50px;">
+    <button id="sj-add-btn" class="cb-start-btn">+ add</button>
+  </div>
+</div>
+<div id="ball-settings-panel" role="dialog" aria-modal="true"></div>
+<div id="task-actions-panel" role="dialog" aria-modal="true"></div>
+<div id="sidequest-card" class="sidequest-card" role="dialog" aria-modal="true" style="display:none;">
+  <div class="cb-header"><span class="cb-title">Sidequest</span><button class="cb-close" id="sq-close-btn" aria-label="Close">×</button></div>
+  <input id="sq-text" class="wi" placeholder="what did you do?">
+  <input id="sq-duration" class="wi" type="number" placeholder="duration (min)" min="5" step="5" value="15">
+  <label class="sq-fun-label">Fun: <input id="sq-fun" type="range" min="1" max="5" value="3"><span id="sq-fun-val">3</span></label>
+  <input id="sq-learned" class="wi" placeholder="what did you learn?">
+  <label class="sq-important-label"><input id="sq-important" type="checkbox"> important?</label>
+  <textarea id="sq-goals" class="wi" placeholder="goals…"></textarea>
+  <div id="sq-budget-info" class="sq-budget-info"></div>
+  <button class="bs-save-btn" id="sq-save-btn">save</button>
+</div>
+<div id="slaydar-overlay" role="dialog" aria-modal="true" style="display:none">
+  <div id="slaydar-panel">
+    <button id="slaydar-close" aria-label="Close">×</button>
+    <h2>Slaydar</h2>
+    <p style="font-size:11px;color:var(--text-secondary);line-height:1.5;margin:0 0 4px;">No judgement awaits. One merely wishes to have a sense of the terrain and to know which way the wind is blowing before charting the course.</p>
+    <svg id="radar-svg" viewBox="-130 -130 260 260" aria-hidden="true"><g id="radar-axes"></g><polygon id="radar-poly-bg" fill="rgba(219,201,122,0.12)" stroke="none"/><polygon id="radar-poly"/></svg>
+    <div id="slaydar-sliders">
+      <label class="sl-row"><span class="sl-lbl">Have you slept enough?</span><input type="range" class="sl-in" id="sl-sleep" min="0" max="100" value="70"><span class="sl-val" id="sv-sleep">70</span></label>
+      <label class="sl-row"><span class="sl-lbl">How is your energy level?</span><input type="range" class="sl-in" id="sl-energy" min="0" max="100" value="70"><span class="sl-val" id="sv-energy">70</span></label>
+      <label class="sl-row"><span class="sl-lbl">How relaxed do you feel?</span><input type="range" class="sl-in" id="sl-stress" min="0" max="100" value="50"><span class="sl-val" id="sv-stress">50</span></label>
+      <label class="sl-row"><span class="sl-lbl">How good is your mood?</span><input type="range" class="sl-in" id="sl-mood" min="0" max="100" value="50"><span class="sl-val" id="sv-mood">50</span></label>
+      <label class="sl-row"><span class="sl-lbl">Have you eaten already?</span><input type="range" class="sl-in" id="sl-food" min="0" max="100" value="50"><span class="sl-val" id="sv-food">50</span></label>
+    </div>
+    <div id="v-display">vibe <span id="v-val">80%</span></div>
+    <button id="save-knot-btn">Save vibe knot</button>
+  </div>
+</div>
+
+<script>
+const KEY='fiso3',COLORS=[null,'w','r','y','l'];
+let blocks=[],wbMap={},timerMap={},_ws=0,_ts=0,engine=null,tickN=0,revQ=[],revP=0;
+const pad=n=>String(n).padStart(2,'0'),hm=m=>pad(Math.floor(m/60)%24)+':'+pad(m%60);
+const fmtd=s=>s>0?Math.floor(s/60)+':'+pad(s%60):'\u2014';
+const fmtm=m=>m>=60?Math.floor(m/60)+'h'+(m%60?' '+m%60+'m':''):m+'m';
+
+function mkTimer(d,wbId){const id='t'+_ts++;const t={id,dur:d,elapsed:0,state:'idle',remFired:false,wbId};timerMap[id]=t;return t;}
+function mkWB(m,type){const id='w'+_ws++;const wb={id,type,sm:m,entries:[]};wb.t0=mkTimer(600,id);wb.t1=mkTimer(300,id);wbMap[id]=wb;return wb;}
+function computeBlockColor(wb){const first=wb.entries.find(e=>e.color);return first?first.color:null;}
+function setBlockColorBar(wb){const col=computeBlockColor(wb);const cs=document.getElementById('cs-'+wb.id);if(cs)cs.className='cs'+(col?' '+col:'');return col;}
+function buildDay(){blocks=[];wbMap={};timerMap={};_ws=0;_ts=0;let m=0,hbn=0;while(m<1440){for(let h=0;h<2&&m<1440;h++){hbn++;const sm=m,wbs=[];for(let j=0;j<4&&m<1440;j++){wbs.push(mkWB(m,j===3?'buffer':'normal'));m+=15;}blocks.push({type:'hour',num:hbn,sm,em:m,wbs});}if(m<1440){const sm=m,wbs=[];for(let j=0;j<2&&m<1440;j++){wbs.push(mkWB(m,'pause'));m+=15;}blocks.push({type:'pause',sm,em:m,wbs});}}try{const ints=JSON.parse(localStorage.getItem('fiso3-int')||'{}');blocks.forEach(blk=>{if(ints[blk.sm])blk.intention=ints[blk.sm];if(Array.isArray(ints['tasks_'+blk.sm]))blk.assignedTasks=ints['tasks_'+blk.sm];});}catch{}}
+function persistAssignedTasks(blk){try{const s=JSON.parse(localStorage.getItem('fiso3-int')||'{}');s['tasks_'+blk.sm]=blk.assignedTasks||[];localStorage.setItem('fiso3-int',JSON.stringify(s));}catch{}}
+function renderIntentionPills(blk,container){
+  if(!container)return;
+  container.innerHTML='';
+  (blk.assignedTasks||[]).forEach(at=>{
+    const pill=document.createElement('span');pill.className='intent-pill';pill.style.background=at.bg||VIRIDIS[0];
+    const txt=document.createElement('span');txt.textContent=at.text;
+    const moreBtn=document.createElement('button');moreBtn.className='pill-more';
+    moreBtn.textContent='⋯';moreBtn.setAttribute('aria-label','Beacon actions');
+    moreBtn.onclick=(ev)=>{
+      ev.stopPropagation();
+      openTaskActions(at,moreBtn,
+        ()=>{persistAssignedTasks(blk);renderIntentionPills(blk,container);},
+        ()=>{blk.assignedTasks=(blk.assignedTasks||[]).filter(x=>x.id!==at.id);persistAssignedTasks(blk);renderIntentionPills(blk,container);}
+      );
+    };
+    const del=document.createElement('button');del.className='ef-del';del.textContent='×';del.setAttribute('aria-label','Unassign beacon');
+    del.onclick=(ev)=>{
+      ev.stopPropagation();
+      blk.assignedTasks=(blk.assignedTasks||[]).filter(x=>x.id!==at.id);
+      persistAssignedTasks(blk);renderIntentionPills(blk,container);
+      const{bg:_bg,...restored}=at;restored.createdAt=Date.now();
+      poolTasks.push(restored);poolTasks.sort((a,b)=>a.createdAt-b.createdAt);
+      savePool();renderPoolSidebar();renderCrystalBall();
+      const toast=document.getElementById('undo-toast');toast.className='on';
+      document.querySelector('#undo-toast span').textContent='Beacon unassigned';
+      clearTimeout(undoTimer);undoTimer=setTimeout(()=>{toast.className='';},5000);
+      document.getElementById('undo-btn').onclick=()=>{
+        poolTasks=poolTasks.filter(t=>t.id!==restored.id);savePool();renderPoolSidebar();renderCrystalBall();
+        blk.assignedTasks=(blk.assignedTasks||[]).concat([at]);persistAssignedTasks(blk);renderIntentionPills(blk,container);
+        toast.className='';clearTimeout(undoTimer);
+      };
+    };
+    pill.append(txt,moreBtn,del);container.appendChild(pill);
+  });
+}
+const saveT=t=>({elapsed:t.elapsed,state:t.state==='running'?'paused':t.state,remFired:t.remFired});
+function save(){const s={};Object.values(wbMap).forEach(wb=>{s[wb.id]={entries:wb.entries,t0:saveT(wb.t0),t1:saveT(wb.t1)};});try{localStorage.setItem(KEY,JSON.stringify(s));}catch{}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');Object.values(wbMap).forEach(wb=>{const d=s[wb.id];if(!d)return;wb.entries=Array.isArray(d.entries)?d.entries:[];if(d.t0)Object.assign(wb.t0,d.t0);if(d.t1)Object.assign(wb.t1,d.t1);});}catch{}}
+
+const $bnr=document.getElementById('bnr'),$msg=document.getElementById('bmsg');
+const showBnr=msg=>{clearTimeout(narratorTimer);$msg.textContent=msg;$bnr.classList.add('on');};
+document.getElementById('xbtn').onclick=()=>{clearTimeout(narratorTimer);$bnr.classList.remove('on','narrator');};
+
+const narratorQuotes={firstTimer:["Ah. We're doing this again. One is quietly awed.","The day begins. No notes.","And so it goes. Marvellous."],afternoonStart:["An afternoon launch. Respectable. The morning is overrated.","Late start. Iconic.","One does not rush greatness."],eveningStart:["Evening operations. The timeline never closes.","After dark. The best work happens when the group chat is asleep."],allTagged:["A fully annotated hour. The archives are grateful.","Tagged, logged, canonised. Impeccable.","Every minute accounted for. One is almost suspicious."],partiallyTagged:["Partially classified. The mysteries remain.","Some details filed. Some left to the imagination."],untaggedElapsed:["Mystery time. Classified. One will not pry.","An hour of... something. The record is silent. One respects it.","Untagged. Unlogged. Unbothered."],silentTrilogy:["A trilogy of silence. One is intrigued.","Three hours. Zero notes. Cinema.","The plot thickens. Or possibly evaporates."],tenMinComplete:["Ten minutes. Done. The timeline moves forward.","A full sprint. One applauds the commitment."],transitionDone:["You've earned a breath. Possibly two.","Transition complete. Graceful.","Winding down. Elegantly."],taggedPreviously:["The record is updated. Canon restored.","Classified at last. The archivists exhale."],lateStart:["No rush. The timeline is also running late.","A slow morning. The feudal lords can wait.","The day observes you observing it."],allBlocksComplete:["The grid is full. The day is documented. One is genuinely impressed.","A complete record. Extraordinary."],reset:["A clean slate. No notes. No witnesses.","Reset. The previous timeline is... not discussed.","Wiped. Fresh. One saw nothing."],exportCSV:["Data extracted. The spreadsheets await.","Exported. The numbers are free."],summaryView:["The day, summarised. Brutally. Elegantly.","A reckoning. Quiet. Polite. Devastating."],allTimeTagged:["Every minute accounted for. The feudal lords could never.","Complete. Canon. One is quietly emotional."],significantUntagged:["Mystery hours. The record is... impressionistic.","Some time unaccounted for. The narrator respects the ambiguity."],deletedTask:["Removed from canon. It never happened.","Deleted. The timeline adjusts."],colourCycled:["Decisive. Eventually.","The colour journey continues."]};
+const NARRATE_COOLDOWN=45*60*1000;
+let lastNarration=0,narratorFlags={},narratorTimer=null,silentStreak=0;
+function maybeNarrate(trigger){if(Date.now()-lastNarration<NARRATE_COOLDOWN)return;const quotes=narratorQuotes[trigger];if(!quotes?.length)return;const q=quotes[Math.floor(Math.random()*quotes.length)];lastNarration=Date.now();clearTimeout(narratorTimer);$msg.textContent=q;$bnr.classList.add('on','narrator');narratorTimer=setTimeout(()=>{$bnr.classList.add('fading');setTimeout(()=>{if($bnr.classList.contains('narrator'))$bnr.classList.remove('on','narrator','fading');},700);},8000);}
+function narrateForce(trigger){lastNarration=0;maybeNarrate(trigger);}
+function onWBComplete(wb){if(wb.type!=='normal')return;const entries=wb.entries||[];const elapsed=(wb.t0.elapsed+wb.t1.elapsed)>0;if(entries.length>0&&entries.every(e=>e.color)){silentStreak=0;maybeNarrate('allTagged');}else if(elapsed&&entries.length===0){silentStreak++;if(silentStreak>=3){silentStreak=0;maybeNarrate('silentTrilogy');}else{maybeNarrate('untaggedElapsed');}}else{silentStreak=0;}}
+function notify(msg){showBnr(msg);if(Notification.permission==='granted')new Notification('feudalism is so out',{body:msg});}
+
+
+const titleAlt=["the timeline is also running late","canon events only","one is quietly tracking","previously, on my terminal","no lords, no masters, just timers","the group chat is not a timesheet","your time is not a resource"];
+let titleClickCount=0,titleClickTimer=null;
+document.querySelector('h1').addEventListener('click',()=>{titleClickCount++;if(titleClickCount===3){const h1=document.querySelector('h1');const orig=h1.textContent;const alt=titleAlt[Math.floor(Math.random()*titleAlt.length)];h1.textContent=alt;setTimeout(()=>{h1.textContent=orig;},2000);titleClickCount=0;}clearTimeout(titleClickTimer);titleClickTimer=setTimeout(()=>{titleClickCount=0;},500);});
+
+const getWB=tid=>{const t=timerMap[tid];return t?wbMap[t.wbId]:null;};
+const isActive=wb=>wb.t0.state==='running'||wb.t1.state==='running';
+// t0's pill is the single combined display for a work block: shows the block's start
+// time when idle, its own countdown while running, then (once done) hands off to
+// showing t1's countdown, then a checkmark once both are done. t1 still gets its own
+// separate pill in the buffer row, so its idle/done states are handled too (shows its
+// own start time when idle rather than blank, since it's still directly visible there).
+const pillTxt=t=>{
+  const wb=wbMap[t.wbId];
+  if(!wb)return t.dur===600?'10':'5';
+  if(wb.type==='buffer'&&t.state==='idle')return'Buffer';
+  if(t.id===wb.t0.id){
+    if(t.state==='idle')return hm(wb.sm);
+    if(t.state==='done'){
+      if(wb.t1.state==='running')return fmtd(wb.t1.dur-wb.t1.elapsed);
+      if(wb.t1.state==='done')return'\u2713';
+      return hm(wb.sm+10); // t0 done, t1 idle
+    }
+    return fmtd(t.dur-t.elapsed); // t0 running
+  }
+  // t1 \u2014 no longer shown in the main timer row, but still rendered directly in the
+  // buffer row, so give it sensible idle/running/done text of its own.
+  if(t.state==='idle')return hm(wb.sm+10);
+  if(t.state==='done')return'\u2713';
+  return fmtd(t.dur-t.elapsed);
+};
+
+function syncTimerControlButtons(){
+  const btn=document.getElementById('fo-pause-btn');
+  if(!btn)return;
+  let state='idle';
+  if(ballTimer){
+    state=ballTimer.state==='running'?'running':ballTimer.state==='paused'?'paused':'idle';
+  } else if(focusTid){
+    const t=timerMap[focusTid];
+    if(t)state=t.state==='running'?'running':t.state==='paused'?'paused':'idle';
+  }
+  btn.dataset.state=state;
+  btn.textContent=state==='paused'?'resume':'pause';
+}
+
+function syncCrystalBallButtons(){
+  document.querySelectorAll('.cb-start-btn').forEach(btn=>{
+    if(btn.id==='cb-add-btn'){btn.dataset.state='idle';return;}
+    const state=!ballTimer?'idle':ballTimer.state==='running'?'running':ballTimer.state==='paused'?'paused':'idle';
+    btn.dataset.state=state;
+  });
+}
+
+function engineStart(){if(engine)return;engine=setInterval(globalTick,1000);}
+function engineStop(){clearInterval(engine);engine=null;}
+
+function globalTick(){tickN++;let any=false;Object.values(timerMap).forEach(t=>{if(t.state!=='running')return;any=true;t.elapsed++;const rem=t.dur-t.elapsed;if(!t.remFired&&rem<=60){t.remFired=true;const wb=getWB(t.id);notify((wb?.label||(t.dur===600?'10-min':'5-min')+' timer')+' \u2014 1 min remaining');}if(t.elapsed>=t.dur){t.elapsed=t.dur;t.state='done';const wb=getWB(t.id);notify((wb?.label||(t.dur===600?'10-min':'5-min')+' timer')+' complete');save();syncDOM(t.id);if(wb&&wb.t0.id===t.id&&wb.t1.state==='idle'){setTimeout(()=>startTimer(wb.t1.id),300);}else if(wb&&wb.t1.id===t.id){onWBComplete(wb);showTransition();}else{hideFocus();}return;}const wb=getWB(t.id);const pillId=wb?wb.t0.id:t.id;const pill=document.getElementById('pill-'+pillId);if(pill){pill.textContent=wb?pillTxt(wb.t0):fmtd(rem);if(rem<=Math.floor(t.dur*.2))pill.dataset.warn='true';else delete pill.dataset.warn;}const ae=document.getElementById('act-'+wb?.id);if(ae){const te=wb.t0.elapsed+wb.t1.elapsed;ae.textContent=te>0?fmtd(te):'\u2014';}});if(ballTimer&&ballTimer.state==='running'){ballTimer.elapsed++;const rem=ballTimer.dur-ballTimer.elapsed;const cd=document.getElementById('fo-cd-text');if(cd)cd.textContent=fmtd(rem);if(ballTimer.elapsed>=ballTimer.dur){completeBallTask();}}updateFocusCountdown();if(!any&&(!ballTimer||ballTimer.state!=='running'))engineStop();if(tickN%10===0){save();}}
+
+// Work blocks only expose t0's pill in the DOM (t1 auto-runs behind it); buffer blocks
+// still show both. combinedPillState/refreshWorkPill keep the single visible pill's
+// data-s and text in sync with whichever of t0/t1 is actually active.
+function combinedPillState(wb){
+  if(wb.t0.state==='done'){
+    if(wb.t1.state==='done')return'done';
+    if(wb.t1.state==='paused')return'paused';
+    return'running'; // t1 idle (about to auto-start) or already running
+  }
+  return wb.t0.state;
+}
+function refreshWorkPill(wb){
+  const pill=document.getElementById('pill-'+wb.t0.id);if(!pill)return;
+  pill.dataset.s=combinedPillState(wb);
+  pill.textContent=pillTxt(wb.t0);
+  delete pill.dataset.warn;
+}
+function syncDOM(tid){const t=timerMap[tid];const wb=getWB(tid);if(wb){refreshWorkPill(wb);}else{const pill=document.getElementById('pill-'+tid);if(pill){pill.dataset.s=t.state;pill.textContent=pillTxt(t);delete pill.dataset.warn;}}const ann=document.getElementById('timer-announce');if(ann){const dl=t.dur===600?'10-minute':'5-minute';const sl={running:'started',paused:'paused',done:'complete'}[t.state]||'';ann.textContent=sl?dl+' timer '+sl:'';}if(!wb)return;const card=document.getElementById('wb-'+wb.id);if(card)card.className='wb'+(isActive(wb)?' act':'');const ae=document.getElementById('act-'+wb.id);if(ae){const te=wb.t0.elapsed+wb.t1.elapsed;ae.textContent=te>0?fmtd(te):'\u2014';}updateDayProgress();}
+
+function toggleTimer(tid){const t=timerMap[tid];if(!t||t.state==='done')return;t.state==='running'?pauseTimer(tid):startTimer(tid);}
+// Creates a beacon from a quick "what are you working on?" capture at timer-start,
+// assigning it straight onto the block as an intention pill. Unlike assignTaskFromPool,
+// this does NOT remove the task from the pool — it stays there (status:'started') so
+// it still shows in Beacons and can later be marked done, matching the status lifecycle.
+function createTaskFromTimerIntent(text,blk){
+  const task={id:'p'+Date.now(),text,color:null,createdAt:Date.now(),estDuration:15,estEnergyCost:'medium',urgency:1,importance:1,category:'should',tags:[],status:'started'};
+  poolTasks.push(task);
+  const idx=poolTasks.indexOf(task),bg=VIRIDIS[idx%VIRIDIS.length];
+  blk.assignedTasks=(blk.assignedTasks||[]).concat([{...task,bg}]);
+  persistAssignedTasks(blk);
+  renderIntentionPills(blk,document.querySelector('.hbr-intention-pills[data-sm="'+blk.sm+'"]'));
+  savePool();renderPoolSidebar();renderCrystalBall();
+}
+function startTimer(tid){const t=timerMap[tid];if(!t||t.state==='done')return;if(Notification.permission==='default')Notification.requestPermission();
+  const wasIdle=t.state==='idle'&&t.elapsed===0;
+  t.state='running';save();syncDOM(tid);engineStart();if(!narratorFlags.firstTimer){narratorFlags.firstTimer=true;narrateForce('firstTimer');}const wb=getWB(tid);focusTriggerEl=document.getElementById('pill-'+tid)||(wb?document.getElementById('pill-'+wb.t0.id):null);if(focusTriggerEl)focusTriggerEl.dataset.s='pending';if(wb)showFocus(wb,t);syncTimerControlButtons();
+  // Only prompt on a genuine fresh start of the block's own pill (t0) — not on the
+  // silent t1 auto-advance, and not when resuming a paused timer.
+  if(wb&&wasIdle&&tid===wb.t0.id){
+    const blk=getBlockForWb(wb);
+    const pillEl=document.getElementById('pill-'+wb.t0.id);
+    const prompt=document.getElementById('timer-intent-prompt');
+    if(blk&&pillEl&&prompt){
+      const rect=pillEl.getBoundingClientRect();
+      prompt.style.left=rect.left+'px';prompt.style.top=(rect.bottom+6)+'px';
+      prompt.value='';prompt.style.display='block';prompt.focus();
+      const commit=()=>{const text=prompt.value.trim();prompt.style.display='none';prompt.onkeydown=null;prompt.onblur=null;if(text)createTaskFromTimerIntent(text,blk);};
+      prompt.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();commit();}else if(ev.key==='Escape'){prompt.value='';prompt.style.display='none';prompt.onkeydown=null;prompt.onblur=null;}};
+      prompt.onblur=()=>{setTimeout(commit,150);};
+    }
+  }
+}
+function pauseTimer(tid){const t=timerMap[tid];if(!t||t.state!=='running')return;if(focusDelayTimer){clearTimeout(focusDelayTimer);focusDelayTimer=null;}t.state='paused';save();syncDOM(tid);if(Object.values(timerMap).every(t=>t.state!=='running')&&(!ballTimer||ballTimer.state!=='running'))engineStop();hideFocus();syncTimerControlButtons();}
+function endTimer(tid){const t=timerMap[tid];if(!t||t.state==='done')return;t.state='done';save();syncDOM(tid);if(Object.values(timerMap).every(t=>t.state!=='running')&&(!ballTimer||ballTimer.state!=='running'))engineStop();hideFocus();const wb2=getWB(tid);if(wb2&&wb2.t1.id===tid)onWBComplete(wb2);syncTimerControlButtons();}
+
+let focusTid=null,focusDelayTimer=null,focusTriggerEl=null;
+function showFocus(wb,t){if(focusDelayTimer){clearTimeout(focusDelayTimer);focusDelayTimer=null;}focusDelayTimer=setTimeout(()=>{focusDelayTimer=null;_renderFocus(wb,t);},500);}
+function focusKeyHandler(ev){if(ev.key!=='Escape')return;ev.preventDefault();const t=focusTid?timerMap[focusTid]:null;if(t&&t.state==='running')pauseTimer(focusTid);else hideFocus();}
+function taskLabelForBlock(blk){if(!blk)return'';const parts=[];if(blk.intention)parts.push(blk.intention);if(Array.isArray(blk.assignedTasks)&&blk.assignedTasks.length)parts.push(blk.assignedTasks.map(t=>t.text).join(', '));return parts.join(' \u00b7 ');}
+function _renderFocus(wb,t){if(focusTriggerEl&&focusTriggerEl.dataset.s==='pending')focusTriggerEl.dataset.s='running';focusTid=t.id;document.removeEventListener('keydown',focusKeyHandler);document.addEventListener('keydown',focusKeyHandler);const fo=document.getElementById('fo');document.getElementById('fo-wbt').textContent=hm(wb.sm)+'\u2013'+hm(wb.sm+15);const cdTxt=document.getElementById('fo-cd-text');if(cdTxt)cdTxt.textContent=fmtd(t.dur-t.elapsed);const taskEl=document.getElementById('fo-task');if(taskEl)taskEl.textContent=taskLabelForBlock(getBlockForWb(wb));fo.className='on '+(t.dur===600?'m0':'m1')+(fo.classList.contains('mini')?' mini':'');syncFocusSizeBtn();setTimeout(()=>document.getElementById('fo-pause-btn')?.focus(),100);}
+function hideFocus(){if(focusDelayTimer){clearTimeout(focusDelayTimer);focusDelayTimer=null;}document.removeEventListener('keydown',focusKeyHandler);const fo=document.getElementById('fo');fo.className='';syncFocusSizeBtn();fo.onclick=null;focusTid=null;syncTimerControlButtons();if(focusTriggerEl){focusTriggerEl.focus();focusTriggerEl=null;}}
+function updateFocusCountdown(){if(!focusTid)return;const t=timerMap[focusTid];if(!t||t.state!=='running')return;const el=document.getElementById('fo-cd-text');if(el)el.textContent=fmtd(t.dur-t.elapsed);}
+document.getElementById('fo-pause-btn').onclick=()=>{if(ballTimer&&ballTimer.state==='running')pauseBallTask();else if(focusTid)pauseTimer(focusTid);};
+function stopFocusTimer(){if(ballTimer){ballTimer=null;ballTimerTask=null;if(Object.values(timerMap).every(t=>t.state!=='running'))engineStop();hideFocus();syncCrystalBallButtons();}else if(focusTid){endTimer(focusTid);}}
+document.getElementById('fo-stop-btn').onclick=stopFocusTimer;
+document.getElementById('fo-close-btn').onclick=()=>hideFocus();
+function syncFocusSizeBtn(){const fo=document.getElementById('fo');const btn=document.getElementById('fo-size-btn');if(!btn)return;const mini=fo.classList.contains('mini');btn.textContent=mini?'expand':'dock';btn.setAttribute('aria-label',mini?'Expand timer to full window':'Dock timer to sidebar size');}
+function toggleFocusSize(){document.getElementById('fo').classList.toggle('mini');syncFocusSizeBtn();}
+document.getElementById('fo-size-btn').onclick=toggleFocusSize;
+
+function parseEst(s){if(!s)return 0;s=s.trim().replace(/[\u2019\u2032]/g,"'");const cm=s.match(/^(\d+):(\d+)/);if(cm)return parseInt(cm[1])*60+parseInt(cm[2]);const ms=s.match(/^(\d+)'(\d+)/);if(ms)return parseInt(ms[1])*60+parseInt(ms[2]);const m=s.match(/^(\d+)/);return m?parseInt(m[1])*60:0;}
+
+
+let undoTimer=null;
+function showUndoToast(wb,entry,_ctx){const toast=document.getElementById('undo-toast');toast.className='on';clearTimeout(undoTimer);undoTimer=setTimeout(()=>{toast.className='';},5000);document.getElementById('undo-btn').onclick=()=>{wb.entries.push(entry);onEntryChanged(wb);toast.className='';clearTimeout(undoTimer);};}
+function updateDayProgress(){let totalSec=0;Object.values(timerMap).forEach(t=>{totalSec+=t.elapsed;});const h=Math.floor(totalSec/3600),m=Math.floor((totalSec%3600)/60);const dpe=document.getElementById('dp-elapsed');if(dpe)dpe.textContent=totalSec>0?(h>0?h+'h ':'')+m+'m elapsed':'';}
+function showTransition(){const fo=document.getElementById('fo');fo.className='on m2'+(fo.classList.contains('mini')?' mini':'');const cdEl=document.getElementById('fo-cd-text');if(cdEl)cdEl.textContent='\u2713';maybeNarrate('transitionDone');const tid=setTimeout(()=>{fo.onclick=null;hideFocus();},30000);fo.onclick=()=>{clearTimeout(tid);fo.onclick=null;hideFocus();};}
+
+const POOL_KEY='fiso3-pool';
+let poolTasks=[],activeAssignmentTarget=null;
+function loadPool(){try{poolTasks=JSON.parse(localStorage.getItem(POOL_KEY)||'[]');}catch{poolTasks=[];}poolTasks.forEach(t=>{if(!('estDuration' in t))t.estDuration=15;if(!('estEnergyCost' in t))t.estEnergyCost='medium';if(!('urgency' in t))t.urgency=1;if(!('importance' in t))t.importance=1;if(!('category' in t))t.category='should';if(!Array.isArray(t.tags))t.tags=[];if(!('status' in t))t.status='pending';});}
+function savePool(){try{localStorage.setItem(POOL_KEY,JSON.stringify(poolTasks));}catch{}}
+function assignTaskFromPool(task){
+  if(!activeAssignmentTarget){showBnr('Click a block\u2019s plan field or client field first, then click a beacon.');return;}
+  const target=activeAssignmentTarget;
+  if(target.type==='intention'){
+    const blk=target.blk;
+    const idx=poolTasks.indexOf(task);const bg=VIRIDIS[(idx>=0?idx:0)%VIRIDIS.length];
+    blk.assignedTasks=(blk.assignedTasks||[]).concat([{...task,bg}]);
+    persistAssignedTasks(blk);
+    renderIntentionPills(blk,document.querySelector('.hbr-intention-pills[data-sm="'+blk.sm+'"]'));
+  }else if(target.type==='entry'){target.input.value=task.text;target.input.focus();}
+  if(task.color){const wb=target.type==='entry'?target.wb:(target.blk?.wbs?.[0]||null);if(wb){const cs=document.getElementById('cs-'+wb.id);if(cs)cs.className='cs '+task.color;const cir=document.getElementById('cir-'+wb.id);if(cir){cir.dataset.col=task.color;}save();}}
+  poolTasks=poolTasks.filter(t=>t.id!==task.id);savePool();renderPoolSidebar();
+  const toast=document.getElementById('undo-toast');toast.className='on';
+  document.querySelector('#undo-toast span').textContent='Beacon assigned';
+  clearTimeout(undoTimer);undoTimer=setTimeout(()=>{toast.className='';},5000);
+  document.getElementById('undo-btn').onclick=()=>{
+    poolTasks.push(task);poolTasks.sort((a,b)=>a.createdAt-b.createdAt);savePool();renderPoolSidebar();
+    if(target.type==='intention'){
+      target.blk.assignedTasks=(target.blk.assignedTasks||[]).filter(x=>x.id!==task.id);
+      persistAssignedTasks(target.blk);
+      renderIntentionPills(target.blk,document.querySelector('.hbr-intention-pills[data-sm="'+target.blk.sm+'"]'));
+    }else if(target.type==='entry'){target.input.value='';}
+    toast.className='';clearTimeout(undoTimer);
+  };
+}
+const tagLabels={w:'work',r:'disc',y:'test',l:'lore'};
+function getBlockForWb(wb){return blocks.find(blk=>blk.wbs&&blk.wbs.some(w=>w.id===wb.id));}
+function onEntryChanged(wb){
+  save();
+  setBlockColorBar(wb);
+  const blk=getBlockForWb(wb);
+  if(blk&&blk.type==='hour'){const c=document.getElementById('hbr-entries-'+blk.num);if(c)renderHourEntries(blk,c);}
+}
+function makeMiniPill(t){const btn=document.createElement('button');btn.id='pill-'+t.id;btn.className='mini-pill';btn.dataset.s=t.state;btn.textContent=pillTxt(t);btn.onclick=()=>toggleTimer(t.id);btn.addEventListener('mouseenter',function(){if(this.dataset.s==='idle'){this.dataset.origText=this.textContent;this.textContent=t.dur===600?'go':'ok';}});btn.addEventListener('mouseleave',function(){if(this.dataset.origText!==undefined){this.textContent=this.dataset.origText;delete this.dataset.origText;}});return btn;}
+function renderHourEntries(blk,container){if(!container)return;container.innerHTML='';const allEntries=[];blk.wbs.forEach(wb=>{wb.entries.forEach(e=>{allEntries.push({wb,entry:e});});});allEntries.sort((a,b)=>a.wb.sm!==b.wb.sm?a.wb.sm-b.wb.sm:(a.entry.client||'').localeCompare(b.entry.client||''));if(allEntries.length===0)return;const tbl=document.createElement('table');tbl.className='he-table';allEntries.forEach(({wb,entry})=>{const tr=document.createElement('tr');const tdTime=document.createElement('td');tdTime.className='he-time';tdTime.textContent=hm(wb.sm);const tdClient=document.createElement('td');tdClient.className='he-client-td';const ci=document.createElement('input');ci.className='wi';ci.value=entry.client||'';ci.placeholder='client';ci.onblur=()=>{if(ci.value.trim()!==(entry.client||'')){entry.client=ci.value.trim();onEntryChanged(wb);}setTimeout(()=>{if(activeAssignmentTarget?.type==='entry'&&activeAssignmentTarget.input===ci)activeAssignmentTarget=null;},200);};ci.onfocus=()=>{activeAssignmentTarget={type:'entry',wb,input:ci};};ci.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='copy';});ci.addEventListener('drop',ev=>{ev.preventDefault();const taskId=ev.dataTransfer.getData('text/plain');const task=poolTasks.find(t=>t.id===taskId);if(!task)return;activeAssignmentTarget={type:'entry',wb,input:ci};assignTaskFromPool(task);});tdClient.appendChild(ci);const tdTag=document.createElement('td');tdTag.className='he-tag-td';const tagPill=document.createElement('button');tagPill.className='he-tag-pill';if(entry.color){tagPill.dataset.col=entry.color;tagPill.textContent=tagLabels[entry.color]||entry.color;}else{tagPill.textContent='\u00b7';}tagPill.setAttribute('aria-label','Cycle tag');tagPill.onclick=()=>{entry.color=COLORS[(COLORS.indexOf(entry.color||null)+1)%COLORS.length];onEntryChanged(wb);};tdTag.appendChild(tagPill);const tdNotes=document.createElement('td');tdNotes.className='he-notes-td';const ni=document.createElement('input');ni.className='wi';ni.value=entry.notes||'';ni.placeholder='notes';ni.onblur=()=>{if(ni.value.trim()!==(entry.notes||'')){entry.notes=ni.value.trim();onEntryChanged(wb);}};tdNotes.appendChild(ni);const tdDel=document.createElement('td');const delBtn=document.createElement('button');delBtn.className='ef-del';delBtn.textContent='\u00d7';delBtn.onclick=()=>{const removed=entry;wb.entries=wb.entries.filter(e=>e.id!==entry.id);onEntryChanged(wb);showUndoToast(wb,removed,blk);};tdDel.appendChild(delBtn);tr.append(tdTime,tdClient,tdTag,tdNotes,tdDel);tbl.appendChild(tr);});container.appendChild(tbl);}
+function renderDay(){const $day=document.getElementById('day');$day.innerHTML='';const $cbar=document.getElementById('cbar');$cbar.innerHTML='';blocks.forEach(blk=>{blk.wbs.forEach(wb=>{const cs=document.createElement('div');cs.id='cs-'+wb.id;cs.className='cs'+(computeBlockColor(wb)?' '+computeBlockColor(wb):'');$cbar.appendChild(cs);});if(blk.type==='pause'){const pd=document.createElement('div');pd.className='hbr-pause';pd.id='pause-'+blk.sm;pd.textContent=hm(blk.sm)+' \u2013 '+hm(blk.em)+'  \u00b7  break';$day.appendChild(pd);return;}const workWbs=blk.wbs.slice(0,3),bufWb=blk.wbs[3];const row=document.createElement('div');row.className='hbr';row.id='hbr-'+blk.num;const L=document.createElement('div');L.className='hbr-l';const workRow=document.createElement('div');workRow.className='hbr-work';const timeDisplay=document.createElement('div');timeDisplay.className='hbr-time-display';timeDisplay.textContent=hm(blk.sm)+' \u2013 '+hm(blk.sm+45);const intentionSection=document.createElement('div');intentionSection.className='hbr-intention-section';const intArea=document.createElement('div');intArea.className='hbr-intention-area';const intPills=document.createElement('div');intPills.className='hbr-intention-pills';intPills.dataset.sm=String(blk.sm);renderIntentionPills(blk,intPills);const workInt=document.createElement('input');workInt.className='hbr-intention hbr-intention-text wi';workInt.placeholder='Drag Beacons here or write down your intentions';workInt.value=blk.intention||'';workInt.dataset.sm=String(blk.sm);workInt.onchange=()=>{blk.intention=workInt.value;try{const s=JSON.parse(localStorage.getItem('fiso3-int')||'{}');s[blk.sm]=workInt.value;localStorage.setItem('fiso3-int',JSON.stringify(s));}catch{}};workInt.onfocus=()=>{activeAssignmentTarget={type:'intention',blk};};workInt.onblur=()=>{setTimeout(()=>{if(activeAssignmentTarget?.type==='intention')activeAssignmentTarget=null;},200);};intArea.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='copy';});intArea.addEventListener('drop',ev=>{ev.preventDefault();const taskId=ev.dataTransfer.getData('text/plain');const task=poolTasks.find(t=>t.id===taskId);if(!task)return;activeAssignmentTarget={type:'intention',blk};assignTaskFromPool(task);});intArea.append(intPills,workInt);intentionSection.append(intArea);const timerRow=document.createElement('div');timerRow.className='hbr-timer-row';workWbs.forEach(wb=>{timerRow.appendChild(makeMiniPill(wb.t0));});if(bufWb){const bufPill=makeMiniPill(bufWb.t0);bufPill.classList.add('buffer-pill');timerRow.appendChild(bufPill);}workRow.append(timeDisplay,intentionSection,timerRow);L.append(workRow);const R=document.createElement('div');R.className='hbr-r';const ec=document.createElement('div');ec.id='hbr-entries-'+blk.num;renderHourEntries(blk,ec);R.appendChild(ec);row.append(L,R);$day.appendChild(row);});}
+
+
+let openFormId=null;
+
+document.getElementById('btn-rev').onclick=()=>{revQ=Object.values(wbMap).filter(wb=>(wb.t0.elapsed>0||wb.t1.elapsed>0)&&wb.entries.length===0).map(wb=>wb.id);revP=0;if(!revQ.length){showBnr('Nothing to review. Every block accounted for.');return;}nextRev();};
+function nextRev(){if(revP>=revQ.length){showBnr('Review done. The record is as complete as it\'s going to be.');revQ=[];return;}const id=revQ[revP++];const el=document.getElementById('wb-'+id);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{const f=document.getElementById('form-'+id);if(f){f.classList.add('open');openFormId=id;}f?.querySelector('.wi')?.focus();},350);}}
+document.getElementById('btn-rst').onclick=()=>{
+  if(!confirm('Reset everything? The day will be... unwritten.'))return;
+  lastNarration=0;maybeNarrate('reset');narratorFlags={};silentStreak=0;engineStop();
+  localStorage.removeItem(KEY);
+  localStorage.removeItem(POOL_KEY);
+  localStorage.removeItem(VITALITY_KEY);
+  localStorage.removeItem(WAVE_TASKS_KEY);
+  localStorage.removeItem('fiso3-int');
+  poolTasks=[];vitalityKnots=[];waveTasks=[];
+  buildDay();renderDay();renderPoolSidebar();renderCrystalBall();
+  waveDirty=true;scheduleWaveRedraw();
+  document.getElementById('sum').className='';
+};
+function tallies(){const work={w:0,r:0,y:0,l:0,none:0},buf={w:0,r:0,y:0,l:0,none:0},names={};Object.values(wbMap).forEach(wb=>{const e=wb.t0.elapsed+wb.t1.elapsed;if(!e)return;const m=Math.round(e/60);if(wb.type==='normal'){work[computeBlockColor(wb)||'none']+=m;wb.entries.forEach(e=>{if(e.client){const min=parseEst(e.est)/60;names[e.client]=(names[e.client]||0)+(min>0?min:0);}});}else if(wb.type==='buffer'){buf[computeBlockColor(wb)||'none']+=m;}});return{work,buf,names};}
+document.getElementById('btn-sum').onclick=()=>{const{work,buf,names}=tallies();const $b=document.getElementById('sbody');$b.innerHTML='';const cats=[['w','Normie work'],['r','Discussions'],['y','Testing'],['l','Lore'],['none','Untagged']];cats.forEach(([c,l])=>{if(!work[c])return;const row=document.createElement('div');row.className='sr';row.innerHTML='<span class="sd '+c+'"></span><span class="sl">'+l+'</span><span class="st">'+fmtm(work[c])+'</span>';$b.appendChild(row);});const bt=Object.values(buf).reduce((a,b)=>a+b,0);if(bt){const bh=document.createElement('div');bh.className='sbh';bh.textContent='Buffer';$b.appendChild(bh);cats.forEach(([c,l])=>{if(!buf[c])return;const row=document.createElement('div');row.className='sr';row.innerHTML='<span class="sd '+c+'"></span><span class="sl">'+l+'</span><span class="st">'+fmtm(buf[c])+'</span>';$b.appendChild(row);});}const ns=Object.entries(names).sort((a,b)=>b[1]-a[1]);if(ns.length){const nh=document.createElement('div');nh.className='sbh';nh.textContent='By label';$b.appendChild(nh);ns.forEach(([n,m])=>{const row=document.createElement('div');row.className='sr';row.innerHTML='<span class="sd"></span><span class="sl">'+n+'</span><span class="st">'+fmtm(m)+'</span>';$b.appendChild(row);});}document.getElementById('sum').className='on';maybeNarrate('summaryView');document.getElementById('sum').scrollIntoView({behavior:'smooth'});};
+document.getElementById('btn-csv').onclick=()=>{const rows=['time,type,colour,client,notes,est,actual_min'];Object.values(wbMap).forEach(wb=>{const elapsed=wb.t0.elapsed+wb.t1.elapsed;if(!elapsed&&wb.t0.state==='idle'&&wb.t1.state==='idle')return;const am=parseFloat((elapsed/60).toFixed(1));const ts='"'+hm(wb.sm)+'\u2013'+hm(wb.sm+15)+'"';const col=computeBlockColor(wb);if(wb.entries.length===0){rows.push([ts,'"'+wb.type+'"','"'+(col||'')+'"','""','""','""','"'+am+'"'].join(','));}else{wb.entries.forEach(e=>{rows.push([ts,'"'+wb.type+'"','"'+(col||'')+'"','"'+(e.client||'').replace(/"/g,'""')+'"','"'+(e.notes||'').replace(/"/g,'""')+'"','"'+(e.est||'')+'"','"'+am+'"'].join(','));});}});const url=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv'}));Object.assign(document.createElement('a'),{href:url,download:'feudalism.csv'}).click();URL.revokeObjectURL(url);if(new Date().getDay()===5){showBnr('Exporting before the weekend. Sensible. The data deserves a break too.');}else{maybeNarrate('exportCSV');}};
+document.getElementById('btn-cpy').onclick=()=>{const{work,names}=tallies();const L=['feudalism is so out \u2014 day summary'];[['w','Normie work'],['r','Discussions'],['y','Testing'],['l','Lore'],['none','Untagged']].forEach(([c,l])=>{if(work[c])L.push(l+': '+fmtm(work[c]));});const ns=Object.entries(names).sort((a,b)=>b[1]-a[1]);if(ns.length){L.push('');ns.forEach(([n,m])=>L.push(n+': '+fmtm(m)));}navigator.clipboard.writeText(L.join('\n')).then(()=>showBnr('Summary copied. The clipboard is now slightly more interesting.')).catch(()=>showBnr('Copy didn\'t take. Try Export CSV \u2014 it\'s more reliable.'));};
+
+
+function dismissTraceForm(){const formWrap=document.getElementById('traces-entry-form');if(formWrap)formWrap.style.display='none';['trace-start','trace-est','trace-client','trace-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const typeEl=document.getElementById('trace-type');if(typeEl)typeEl.value='';}
+function saveTraceEntry(){const startEl=document.getElementById('trace-start'),estEl=document.getElementById('trace-est'),typeEl=document.getElementById('trace-type'),clientEl=document.getElementById('trace-client'),notesEl=document.getElementById('trace-notes');const parts=(startEl.value||'').split(':').map(Number);const totalMin=(parts[0]||0)*60+(parts[1]||0);let bestWb=Object.values(wbMap).find(wb=>wb.sm<=totalMin&&totalMin<wb.sm+15);if(!bestWb){let minDiff=Infinity;Object.values(wbMap).forEach(wb=>{const d=Math.abs(wb.sm-totalMin);if(d<minDiff){minDiff=d;bestWb=wb;}});}if(!bestWb||(!clientEl.value.trim()&&!notesEl.value.trim())){dismissTraceForm();return;}const entry={id:'n'+Date.now(),client:clientEl.value.trim(),notes:notesEl.value.trim(),est:estEl.value.trim(),color:typeEl.value||null};bestWb.entries.push(entry);onEntryChanged(bestWb);dismissTraceForm();}
+function addLoggedEntry(){const formWrap=document.getElementById('traces-entry-form');if(!formWrap)return;if(formWrap.style.display==='flex'){document.getElementById('trace-client')?.focus();return;}formWrap.style.display='flex';const now=new Date();const startEl=document.getElementById('trace-start');if(startEl)startEl.value=pad(now.getHours())+':'+pad(now.getMinutes());document.getElementById('trace-client')?.focus();}
+document.getElementById('traces-add-btn').onclick=addLoggedEntry;
+document.getElementById('trace-save-btn')?.addEventListener('click',saveTraceEntry);
+['trace-est','trace-client','trace-notes'].forEach(id=>{document.getElementById(id)?.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();saveTraceEntry();}if(ev.key==='Escape')dismissTraceForm();});});
+window.addEventListener('beforeunload',save);
+
+const VIRIDIS=['#4D6B3A','#5f7d44','#748f52','#8a9d63','#a3ab78','#b8bcc2','#c9c68f','#dbc97a','#ede4d6'];
+const VIRIDIS_TC=bg=>['#a3ab78','#b8bcc2','#c9c68f','#dbc97a','#ede4d6'].includes(bg.toLowerCase())?'rgba(0,0,0,.72)':'#fff';
+
+// -- Side-jester: sidequest line on the wave + its edit card --
+// Shared by drawing (drawWave) and hit-testing (canvas pointerup) so the visible line
+// and the clickable area always agree. Approximated as a simple vertical offset from
+// waveCenterY rather than a true curve-normal offset (like the upper/lower band uses)
+// — close enough for a soft decorative line and much simpler to hit-test analytically
+// without caching a full sampled point array between frames.
+function sideQuestOffset(t){
+  let offset=8; // base px offset above centre, visible even with no sidequests yet
+  sideQuests.forEach(sq=>{
+    const d=t-sq.t;
+    offset+=14*Math.exp(-(d*d)/(2*0.15*0.15)); // ~9min-wide bump marking each sidequest
+  });
+  return offset;
+}
+function sideQuestLineY(t,H,nowH){return waveCenterY(t,H,nowH)-sideQuestOffset(t);}
+
+let pendingSideQuestT=null;
+function sqEsc(e){if(e.key==='Escape')closeSideQuestCard();}
+function updateSideQuestBudgetInfo(){
+  const el=document.getElementById('sq-budget-info');if(!el)return;
+  const remaining=sideQuestRemainingMinutes();
+  if(remaining<0){el.textContent='Over budget by '+Math.abs(remaining)+' min';el.classList.add('over');}
+  else{el.textContent=remaining+' min left in sidequest budget';el.classList.remove('over');}
+}
+function openSideQuestCard(t,clientX,clientY){
+  const card=document.getElementById('sidequest-card');if(!card)return;
+  pendingSideQuestT=t;
+  document.getElementById('sq-text').value='';
+  document.getElementById('sq-duration').value=15;
+  document.getElementById('sq-fun').value=3;document.getElementById('sq-fun-val').textContent='3';
+  document.getElementById('sq-learned').value='';
+  document.getElementById('sq-important').checked=false;
+  document.getElementById('sq-goals').value='';
+  updateSideQuestBudgetInfo();
+  const cw=260,vw=window.innerWidth,vh=window.innerHeight;
+  card.style.left=Math.min(clientX,vw-cw-8)+'px';
+  card.style.top=Math.min(clientY,vh-320)+'px';
+  card.classList.add('show');
+  document.getElementById('sq-text').focus();
+  document.addEventListener('keydown',sqEsc);
+}
+function closeSideQuestCard(){
+  const card=document.getElementById('sidequest-card');if(card)card.classList.remove('show');
+  pendingSideQuestT=null;
+  document.removeEventListener('keydown',sqEsc);
+}
+document.getElementById('sq-fun')?.addEventListener('input',()=>{
+  const val=document.getElementById('sq-fun').value;
+  const out=document.getElementById('sq-fun-val');if(out)out.textContent=val;
+});
+document.getElementById('sq-close-btn')?.addEventListener('click',closeSideQuestCard);
+document.getElementById('sq-save-btn')?.addEventListener('click',()=>{
+  if(pendingSideQuestT===null)return;
+  const sq={
+    id:'sq'+Date.now(),
+    t:pendingSideQuestT,
+    text:document.getElementById('sq-text').value.trim(),
+    duration:parseInt(document.getElementById('sq-duration').value)||15,
+    fun:parseInt(document.getElementById('sq-fun').value)||3,
+    learned:document.getElementById('sq-learned').value.trim(),
+    important:document.getElementById('sq-important').checked,
+    goals:document.getElementById('sq-goals').value.trim(),
+    createdAt:new Date().toISOString()
+  };
+  sideQuests.push(sq);saveSideQuests();
+  closeSideQuestCard();
+  waveDirty=true;scheduleWaveRedraw();
+});
+
+// -- Task pill "…" actions: start/pause the ball timer, edit details, delete --
+function taEsc(e){if(e.key==='Escape')closeTaskActions();}
+function closeTaskActions(){const p=document.getElementById('task-actions-panel');if(p)p.style.display='none';document.removeEventListener('keydown',taEsc);}
+function openTaskActions(task,anchorEl,onChange,onDelete){
+  const p=document.getElementById('task-actions-panel');if(!p)return;
+  const isThis=ballTimerTask&&ballTimerTask.id===task.id&&ballTimer;
+  const isRunning=isThis&&ballTimer.state==='running';
+  const isPaused=isThis&&ballTimer.state==='paused';
+  p.innerHTML=
+    '<button class="tap-close" aria-label="Close">×</button>'+
+    '<div class="tap-title"></div>'+
+    '<div class="tap-row">'+
+      '<button class="tap-btn primary" id="tap-startpause">'+(isRunning?'Pause':(isPaused?'Resume':'Start'))+'</button>'+
+      '<button class="tap-btn" id="tap-complete">'+(task.status==='completed'?'Mark not done':'Mark done')+'</button>'+
+      '<button class="tap-btn danger" id="tap-delete">Delete</button>'+
+    '</div>'+
+    '<div class="tap-edit-row"><label>Text</label><input id="tap-text"></div>'+
+    '<div class="tap-edit-row"><label>Duration (min)</label><input id="tap-dur" type="number" min="5" step="5"></div>'+
+    '<div class="tap-edit-row"><label>Energy</label><select id="tap-energy"><option value="low">low</option><option value="medium">medium</option><option value="high">high</option></select></div>'+
+    '<div class="tap-edit-row"><label>Urgency</label><input id="tap-urg" type="number" min="1" max="5"></div>'+
+    '<div class="tap-edit-row"><label>Importance</label><input id="tap-imp" type="number" min="1" max="5"></div>'+
+    '<div class="tap-edit-row"><label>Category</label><select id="tap-cat"><option value="should">should</option><option value="enjoyable">enjoyable</option></select></div>'+
+    '<button class="tap-btn primary" id="tap-save">Save</button>';
+  p.querySelector('.tap-title').textContent=task.text;
+  p.querySelector('.tap-close').onclick=closeTaskActions;
+  document.getElementById('tap-text').value=task.text||'';
+  document.getElementById('tap-dur').value=task.estDuration||15;
+  document.getElementById('tap-energy').value=task.estEnergyCost||'medium';
+  document.getElementById('tap-urg').value=task.urgency||1;
+  document.getElementById('tap-imp').value=task.importance||1;
+  document.getElementById('tap-cat').value=task.category||'should';
+  document.getElementById('tap-startpause').onclick=()=>{
+    if(isRunning)pauseBallTask();else if(isPaused)resumeBallTask();else startBallTask(task);
+    closeTaskActions();
+  };
+  document.getElementById('tap-delete').onclick=()=>{onDelete();closeTaskActions();};
+  document.getElementById('tap-complete').onclick=()=>{task.status=task.status==='completed'?'pending':'completed';onChange();closeTaskActions();};
+  document.getElementById('tap-save').onclick=()=>{
+    task.text=document.getElementById('tap-text').value.trim()||task.text;
+    task.estDuration=parseInt(document.getElementById('tap-dur').value)||15;
+    task.estEnergyCost=document.getElementById('tap-energy').value;
+    task.urgency=parseInt(document.getElementById('tap-urg').value)||1;
+    task.importance=parseInt(document.getElementById('tap-imp').value)||1;
+    task.category=document.getElementById('tap-cat').value;
+    onChange();closeTaskActions();
+  };
+  const rect=anchorEl.getBoundingClientRect();
+  p.style.display='flex';
+  const pw=260,ph=p.offsetHeight||360,vw=window.innerWidth,vh=window.innerHeight;
+  let left=Math.min(rect.left,vw-pw-8),top=rect.bottom+6;
+  if(top+ph>vh-8)top=Math.max(8,rect.top-ph-6);
+  p.style.left=left+'px';p.style.top=top+'px';p.style.right='auto';p.style.bottom='auto';
+  document.addEventListener('keydown',taEsc);
+}
+
+function renderPoolSidebar(){
+  const pills=document.getElementById('pool-sb-pills');
+  const count=document.getElementById('pool-sb-count');
+  if(!pills)return;
+  pills.innerHTML='';
+  // Beacons = pending/started tasks only; completed ones move to Traces (they still
+  // live in poolTasks — see "All tasks" in the crystal-ball-full panel — just hidden
+  // here). Colour indices stay keyed to the raw poolTasks array so a task's sidebar
+  // pill and its wave dot never fall out of sync as other tasks complete.
+  const visibleCount=poolTasks.filter(t=>t.status!=='completed').length;
+  if(count)count.textContent=visibleCount?' ('+visibleCount+')':'';
+  poolTasks.forEach((task,idx)=>{
+    if(task.status==='completed')return;
+    const bg=task._viridis||VIRIDIS[idx%VIRIDIS.length];
+    const pill=document.createElement('button');
+    pill.className='pool-sb-pill';
+    pill.style.background=bg;
+    pill.style.color=VIRIDIS_TC(bg);
+    pill.setAttribute('aria-label','Manage: '+task.text);
+    pill.title=(task.estDuration||15)+'min \u00b7 '+(task.estEnergyCost||'medium')+' \u00b7 urgency:'+(task.urgency||1)+' importance:'+(task.importance||1);
+    pill.draggable=true;
+    pill.dataset.taskId=task.id;
+    pill.addEventListener('dragstart',ev=>{ev.dataTransfer.setData('text/plain',task.id);ev.dataTransfer.effectAllowed='copy';});
+    const txt=document.createElement('span');
+    txt.textContent=task.text.charAt(0).toUpperCase()+task.text.slice(1);
+    const catDot=document.createElement('span');
+    catDot.className='pill-cat-dot '+(task.category||'should');
+    catDot.title=task.category==='enjoyable'?'Hedonizer':'Gouvernante';
+    pill.append(txt,catDot);
+    // No visible \u00d7/\u22ef controls \u2014 click opens the shared task-actions panel (start,
+    // edit, delete). Assignment to a block/entry is now done by dragging the pill.
+    pill.onclick=ev=>{
+      ev.stopPropagation();
+      openTaskActions(task,pill,
+        ()=>{savePool();renderPoolSidebar();renderCrystalBall();},
+        ()=>{
+          const removed=task;poolTasks=poolTasks.filter(t=>t.id!==task.id);
+          savePool();renderPoolSidebar();renderCrystalBall();
+          const toast=document.getElementById('undo-toast');toast.className='on';
+          document.querySelector('#undo-toast span').textContent='Beacon removed';
+          clearTimeout(undoTimer);undoTimer=setTimeout(()=>{toast.className='';},5000);
+          document.getElementById('undo-btn').onclick=()=>{poolTasks.push(removed);poolTasks.sort((a,b)=>a.createdAt-b.createdAt);savePool();renderPoolSidebar();renderCrystalBall();toast.className='';clearTimeout(undoTimer);};
+        }
+      );
+    };
+    pill.oncontextmenu=ev=>{
+      ev.preventDefault();
+      const nextIdx=(VIRIDIS.indexOf(task._viridis||bg)+1)%VIRIDIS.length;
+      task._viridis=VIRIDIS[nextIdx];
+      savePool();renderPoolSidebar();
+    };
+    pills.appendChild(pill);
+  });
+}
+
+// -- Narrator easter eggs --
+(function(){
+  const now=new Date(),h=now.getHours(),m=now.getMinutes();
+  if(h===16&&m===20){showBnr("Ah. That time. One will make no comment.");}
+  if(h===0&&m<=5){showBnr("A new day. Or the same day, refusing to end. Either way, one is here.");}
+  if(h>=20&&Object.values(timerMap).every(t=>t.elapsed===0)){showBnr("A day of rest. Or resistance. One does not distinguish.");}
+  if(h>=14){narratorFlags.afternoonChecked=true;maybeNarrate('afternoonStart');}
+  const target=new Date();target.setHours(10,0,0,0);
+  const ms=target-now;
+  if(ms>0)setTimeout(()=>{if(!narratorFlags.firstTimer)maybeNarrate('lateStart');},ms);
+  else if(h===10&&now.getMinutes()===0&&!narratorFlags.firstTimer)maybeNarrate('lateStart');
+})();
+
+// ===================================================================
+// VITALITY & WAVE SYSTEM
+// ===================================================================
+const VITALITY_KEY='fiso3-vitality',BALL_KEY='fiso3-ball-settings',WAVE_TASKS_KEY='fiso3-wave-tasks',SIDEQUEST_KEY='fiso3-sidequests';
+const ENERGY_NUM={low:0.3,medium:0.6,high:0.9};
+const WAVE_DOMAIN=168; // +-7 days, in hours, per wavefunction.md coordinate system
+const WAVE_DAY_COLORS=['#098A00','#7E3A6','#DCE8C5','#1C1B1A','#F2E2D5','#C4C9D1','#F6F5F2'];
+let vitalityKnots=[],waveTasks=[],currentV=0.8,waveDirty=true,waveAnimId=null,waveKnotDrag=null;
+let sideQuests=[];
+let waveTransform={center:24,hoursVisible:48}; // visible window in hours-from-now; default = now..+48h
+let ballSettings={awakeStart:7,awakeEnd:23,deepWorkWindows:[{start:9},{start:15}],distractionWindows:[{start:13},{start:20}],breakRatio:1,shifts:{gouvernante:[{days:[1,2,3,4,5],start:9,end:13},{days:[1,2,3,4,5],start:14,end:16}],hedonizer:'otherwise'},sideQuestBudget:300};
+function loadSideQuests(){try{sideQuests=JSON.parse(localStorage.getItem(SIDEQUEST_KEY)||'[]');}catch{sideQuests=[];}}
+function saveSideQuests(){try{localStorage.setItem(SIDEQUEST_KEY,JSON.stringify(sideQuests));}catch{}}
+function sideQuestUsedMinutes(){return sideQuests.reduce((sum,sq)=>sum+(sq.duration||0),0);}
+function sideQuestRemainingMinutes(){return(ballSettings.sideQuestBudget||300)-sideQuestUsedMinutes();}
+function hhmmToDec(s){const parts=(s||'').split(':').map(Number);return(parts[0]||0)+(parts[1]||0)/60;}
+function decToHHMM(d){const norm=((d%24)+24)%24,h=Math.floor(norm),m=Math.round((norm-h)*60);return pad(h)+':'+pad(m);}
+function inFixedWindow(absHourOfDay,windows,durationH){
+  return(windows||[]).some(w=>{
+    const s=((w.start%24)+24)%24,e=s+durationH;
+    return e<=24?(absHourOfDay>=s&&absHourOfDay<e):(absHourOfDay>=s||absHourOfDay<e-24);
+  });
+}
+let ballWorkMinutes=0,cbOpen=false,ballTimer=null,ballTimerTask=null;
+
+function loadVitalityData(){
+  try{vitalityKnots=JSON.parse(localStorage.getItem(VITALITY_KEY)||'[]');}catch{vitalityKnots=[];}
+  try{const bs=JSON.parse(localStorage.getItem(BALL_KEY)||'{}');ballSettings={...ballSettings,...bs};}catch{}
+  try{waveTasks=JSON.parse(localStorage.getItem(WAVE_TASKS_KEY)||'[]').filter(wt=>typeof wt.hour==='number');}catch{waveTasks=[];}
+  currentV=getVAt(0);
+}
+function saveVitalityData(){try{localStorage.setItem(VITALITY_KEY,JSON.stringify(vitalityKnots));}catch{}}
+function saveBallSettings(){try{localStorage.setItem(BALL_KEY,JSON.stringify(ballSettings));}catch{}}
+function saveWaveTasks(){try{localStorage.setItem(WAVE_TASKS_KEY,JSON.stringify(waveTasks));}catch{}}
+function getVAt(t){
+  const now=new Date();
+  const nowH=now.getHours()+now.getMinutes()/60;
+  return waveEffectiveVitality(t,nowH);
+}
+function getPreviousSleepBoundaryTime(t, nowH){
+  const absHour=((nowH+t)%24+24)%24;
+  const delta=((absHour-ballSettings.awakeEnd+24)%24);
+  return t-delta;
+}
+function getNextSleepBoundaryTime(t, nowH){
+  const absHour=((nowH+t)%24+24)%24;
+  const delta=((ballSettings.awakeEnd-absHour+24)%24);
+  return t+delta;
+}
+function waveEffectiveVitality(t, nowH){
+  if(!vitalityKnots.length)return 0.8;
+  const boundaryStart=getPreviousSleepBoundaryTime(t, nowH);
+  const boundaryEnd=getNextSleepBoundaryTime(t, nowH);
+  const segmentKnots=vitalityKnots
+    .filter(k=>k.t>=boundaryStart && k.t<=t && k.t<boundaryEnd)
+    .sort((a,b)=>a.t-b.t);
+  return segmentKnots.length?segmentKnots[segmentKnots.length-1].vitality:0.8;
+}
+function addKnotAtTime(t){
+  t=Math.max(-WAVE_DOMAIN,Math.min(WAVE_DOMAIN,t));
+  vitalityKnots=vitalityKnots.filter(k=>Math.abs(k.t-t)>0.5);
+  const sliderVal=id=>{const el=document.getElementById(id);return el?parseInt(el.value):null;};
+  vitalityKnots.push({
+    t,vitality:currentV,
+    sliders:{sleep:sliderVal('sl-sleep'),energy:sliderVal('sl-energy'),stress:sliderVal('sl-stress'),mood:sliderVal('sl-mood'),food:sliderVal('sl-food')},
+    timestamp:new Date().toISOString()
+  });
+  vitalityKnots.sort((a,b)=>a.t-b.t);
+  saveVitalityData();waveDirty=true;scheduleWaveRedraw();
+}
+
+// -- Wave math (reconstructed) --
+function waveViewStart(){return waveTransform.center-waveTransform.hoursVisible/2;}
+function waveViewEnd(){return waveTransform.center+waveTransform.hoursVisible/2;}
+function hourToX(t,W){return(t-waveViewStart())/waveTransform.hoursVisible*W;}
+function xToHour(px,W){return waveViewStart()+(px/W)*waveTransform.hoursVisible;}
+
+// Half-width envelope. Window effect (deep-work/distraction) and meander are held at
+// zero for now — perpendicular-normal offsetting in drawWave() is what guarantees
+// upper/lower symmetry, not these terms, so they can be reintroduced later without
+// risking it (see chat notes on reinstating them here).
+function computeHalfWidth(t, nowH){
+  const V=waveEffectiveVitality(t,nowH);
+  const dec=Math.max(0,1-Math.abs(t)/48);
+  const absH=((nowH+t)%24+24)%24;
+  const pinch=0.6+0.25*Math.cos(2*Math.PI*absH/3);
+  const nowBulge=1+0.3*Math.exp(-t*t/2);
+  const windowEff=0; // deep-work/distraction window shaping — disabled for now
+  const meander=0;   // window-driven ripple — disabled for now
+  const baseHW=42;
+  return baseHW*dec*V*pinch*nowBulge*(1+meander)*(1+windowEff*0.3);
+}
+function waveCenterY(t,H,nowH){
+  const V=waveEffectiveVitality(t,nowH);
+  const dec=Math.max(0,1-Math.abs(t)/48);
+  const baseline=(t/48)*0.15*H;
+  const absH=((nowH+t)%24+24)%24;
+  return H/2-baseline-H*0.225*V*dec*Math.cos(2*Math.PI*absH/12);
+}
+function waveDayColorAt(t, nowH, now){
+  const absHour=((nowH+t)%24+24)%24;
+  const dayOffset=Math.floor((t+nowH)/24);
+  const weekdayIndex=(now.getDay()+6)%7;
+  const dayIndex=(weekdayIndex+dayOffset+7)%7;
+  const color=WAVE_DAY_COLORS[dayIndex];
+  const peakStrength=Math.exp(-Math.pow((absHour-10)/7,2));
+  return {color, alpha:0.72+0.28*peakStrength};
+}
+function waveDayGradientStops(viewStart, viewEnd, nowH, now){
+  const stops=[];
+  const span=viewEnd-viewStart;
+  for(let i=0;i<=7;i++){
+    const t=viewStart+(span*i/7);
+    const {color, alpha}=waveDayColorAt(t, nowH, now);
+    stops.push({pos:i/7,color,alpha});
+  }
+  return stops;
+}
+function scheduleWaveRedraw(){if(!waveDirty||waveAnimId)return;waveAnimId=requestAnimationFrame(()=>{waveAnimId=null;drawWave();});}
+function clampWaveView(){
+  const half=waveTransform.hoursVisible/2;
+  waveTransform.center=Math.max(-WAVE_DOMAIN+half,Math.min(WAVE_DOMAIN-half,waveTransform.center));
+}
+function findKnotAt(px,py,W,H,nowH){
+  for(const k of vitalityKnots){
+    const kx=hourToX(k.t,W),ky=waveCenterY(k.t,H,nowH);
+    if(Math.hypot(px-kx,py-ky)<12)return k;
+  }
+  return null;
+}
+function findWaveTaskAt(px,py,W,H,nowH){
+  for(const wt of waveTasks){
+    const task=poolTasks.find(t=>t.id===wt.taskId);
+    if(!task)continue;
+    const x=hourToX(wt.hour,W),y=waveCenterY(wt.hour,H,nowH);
+    if(Math.hypot(px-x,py-y)<12)return task;
+  }
+  return null;
+}
+
+function initWaveCanvas(){
+  const container=document.getElementById('wave-container');
+  const canvas=document.getElementById('wave-canvas');
+  if(!container||!canvas)return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  function resize(){const w=container.clientWidth,h=container.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';waveDirty=true;scheduleWaveRedraw();}
+  new ResizeObserver(resize).observe(container);
+  resize();
+  canvas.addEventListener('wheel',ev=>{
+    ev.preventDefault();
+    const delta=ev.deltaY*0.0016;
+    const nhv=Math.max(4,Math.min(24,waveTransform.hoursVisible*(1+delta)));
+    const cursorHour=xToHour(ev.offsetX,canvas.clientWidth);
+    const f=ev.offsetX/canvas.clientWidth;
+    waveTransform.hoursVisible=nhv;
+    waveTransform.center=cursorHour+(0.5-f)*nhv;
+    clampWaveView();waveDirty=true;scheduleWaveRedraw();
+  },{passive:false});
+  let pd=null,longPressTimer=null;
+  canvas.addEventListener('pointerdown',ev=>{
+    if(ev.button!==0)return;
+    pd={x:ev.offsetX,c0:waveTransform.center};
+    canvas.setPointerCapture(ev.pointerId);
+    // Long-press (hold still for 2s) reveals the sidequest line. Cancelled on any
+    // real movement in pointermove below, so panning the view doesn't also trigger it.
+    longPressTimer=setTimeout(()=>{window.sideQuestVisible=true;waveDirty=true;scheduleWaveRedraw();},2000);
+  });
+  canvas.addEventListener('pointermove',ev=>{
+    if(!pd)return;
+    if(longPressTimer&&Math.abs(ev.offsetX-pd.x)>5){clearTimeout(longPressTimer);longPressTimer=null;}
+    const dh=-(ev.offsetX-pd.x)/canvas.clientWidth*waveTransform.hoursVisible;waveTransform.center=pd.c0+dh;clampWaveView();waveDirty=true;scheduleWaveRedraw();
+  });
+  canvas.addEventListener('pointerleave',()=>{if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}});
+  canvas.addEventListener('pointerup',ev=>{
+    if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null;}
+    if(!pd)return;
+    const wasDrag=Math.abs(ev.offsetX-pd.x)>5;
+    pd=null;
+    if(wasDrag)return;
+    const now=new Date(),nowH=now.getHours()+now.getMinutes()/60;
+    if(window.sideQuestVisible){
+      const t=xToHour(ev.offsetX,canvas.clientWidth);
+      const ly=sideQuestLineY(t,canvas.clientHeight,nowH);
+      if(Math.abs(ev.offsetY-ly)<20){
+        openSideQuestCard(t,ev.clientX,ev.clientY);
+        return;
+      }
+    }
+    const clickedTask=findWaveTaskAt(ev.offsetX,ev.offsetY,canvas.clientWidth,canvas.clientHeight,nowH);
+    if(clickedTask){
+      const anchor={getBoundingClientRect:()=>({left:ev.clientX,top:ev.clientY,right:ev.clientX,bottom:ev.clientY,width:0,height:0})};
+      openTaskActions(clickedTask,anchor,
+        ()=>{savePool();renderPoolSidebar();renderCrystalBall();waveDirty=true;scheduleWaveRedraw();},
+        ()=>{
+          const removed=clickedTask;poolTasks=poolTasks.filter(t=>t.id!==clickedTask.id);
+          savePool();renderPoolSidebar();renderCrystalBall();waveDirty=true;scheduleWaveRedraw();
+          const toast=document.getElementById('undo-toast');toast.className='on';
+          document.querySelector('#undo-toast span').textContent='Beacon removed';
+          clearTimeout(undoTimer);undoTimer=setTimeout(()=>{toast.className='';},5000);
+          document.getElementById('undo-btn').onclick=()=>{poolTasks.push(removed);poolTasks.sort((a,b)=>a.createdAt-b.createdAt);savePool();renderPoolSidebar();renderCrystalBall();waveDirty=true;scheduleWaveRedraw();toast.className='';clearTimeout(undoTimer);};
+        }
+      );
+      return;
+    }
+    const knot=findKnotAt(ev.offsetX,ev.offsetY,canvas.clientWidth,canvas.clientHeight,nowH);
+    if(knot){openSlaydar(knot);}
+    else{addKnotAtTime(xToHour(ev.offsetX,canvas.clientWidth));openSlaydar();}
+  });
+  canvas.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='copy';});
+  canvas.addEventListener('drop',ev=>{
+    ev.preventDefault();
+    const taskId=ev.dataTransfer.getData('text/plain');
+    const task=poolTasks.find(t=>t.id===taskId);
+    if(!task)return;
+    const hour=Math.max(-WAVE_DOMAIN,Math.min(WAVE_DOMAIN,xToHour(ev.offsetX,canvas.clientWidth)));
+    waveTasks.push({taskId:task.id,hour});
+    saveWaveTasks();waveDirty=true;scheduleWaveRedraw();
+    showBnr('Beacon added to wave: '+task.text);
+  });
+  setInterval(()=>{waveDirty=true;scheduleWaveRedraw();},12000);
+}
+
+function renderWaveKnotMarkers(W,H,nowH){
+  const knotsDiv=document.getElementById('wave-knots');if(!knotsDiv)return;
+  knotsDiv.innerHTML='';
+  vitalityKnots.forEach(k=>{
+    const x=hourToX(k.t,W);
+    if(x<-20||x>W+20)return;
+    const y=waveCenterY(k.t,H,nowH);
+    const m=document.createElement('div');
+    m.className='wave-knot-marker';
+    m.style.left=x+'px';m.style.top=y+'px';
+    m.title='Vitality '+Math.round(k.vitality*100)+'%';
+    m.addEventListener('pointerdown',ev=>{
+      ev.stopPropagation();ev.preventDefault();
+      waveKnotDrag=k;m.classList.add('dragging');m.setPointerCapture(ev.pointerId);
+    });
+    m.addEventListener('pointermove',ev=>{
+      if(waveKnotDrag!==k)return;
+      const rect=document.getElementById('wave-canvas').getBoundingClientRect();
+      k.t=Math.max(-WAVE_DOMAIN,Math.min(WAVE_DOMAIN,xToHour(ev.clientX-rect.left,rect.width)));
+      waveDirty=true;scheduleWaveRedraw();
+    });
+    const endDrag=()=>{if(waveKnotDrag===k){waveKnotDrag=null;vitalityKnots.sort((a,b)=>a.t-b.t);saveVitalityData();waveDirty=true;scheduleWaveRedraw();}};
+    m.addEventListener('pointerup',endDrag);
+    m.addEventListener('pointercancel',endDrag);
+    knotsDiv.appendChild(m);
+  });
+}
+
+// A small stylised rabbit silhouette marking "now" on the wave — rounded body, a round
+// head overlapping it, two asymmetric pointed ears, and a small cutout eye. Shared by
+// the wave's canvas marker and the intro animation's ball/leap canvases.
+function drawRabbitOnContext(ctx,cx,cy,scale){
+  ctx.save();
+  ctx.translate(cx,cy);ctx.scale(scale,scale);
+  ctx.fillStyle='#E80027';
+  ctx.beginPath();ctx.ellipse(2,6,7,6,0.4,0,2*Math.PI);ctx.fill();
+  ctx.beginPath();ctx.arc(-4,-1,5.5,0,2*Math.PI);ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-6,-4);ctx.quadraticCurveTo(-8,-14,-5,-18);ctx.quadraticCurveTo(-3,-14,-3,-5);ctx.closePath();ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-2,-5);ctx.quadraticCurveTo(4,-13,9,-17);ctx.quadraticCurveTo(6,-10,0,-4);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.95)';
+  ctx.beginPath();ctx.arc(-2,9,1.1,0,2*Math.PI);ctx.fill();
+  ctx.restore();
+}
+function drawRabbitMarker(ctx,cx,cy,scale){
+  drawRabbitOnContext(ctx,cx,cy,scale);
+}
+
+function drawWave(){
+  const canvas=document.getElementById('wave-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const W=canvas.width/dpr,H=canvas.height/dpr;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save();ctx.scale(dpr,dpr);
+  const now=new Date();
+  const nowH=now.getHours()+now.getMinutes()/60;
+  // Sample density is tied to canvas pixel width (not hours-visible) so resolution
+  // stays ~1 sample/px regardless of zoom level, instead of degrading when zoomed
+  // out to many days or oversampling when zoomed into a few hours.
+  const viewStart=waveViewStart(),viewEnd=waveViewEnd(),steps=Math.max(300, Math.ceil(W*0.8));
+
+  // Today: a subtly lighter background column behind everything else, from the
+  // previous midnight to the next one, so "today" reads as distinct when zoomed out.
+  const todayX0=hourToX(Math.max(viewStart,-nowH),W),todayX1=hourToX(Math.min(viewEnd,24-nowH),W);
+  if(todayX1>todayX0){ctx.fillStyle='rgba(255,255,255,.08)';ctx.fillRect(todayX0,0,todayX1-todayX0,H);}
+
+  // 1. Sample the centre curve and raw half-widths.
+  const center=[],hwRaw=[];
+  for(let i=0;i<=steps;i++){
+    const t=viewStart+(i/steps)*(viewEnd-viewStart),x=hourToX(t,W),y=waveCenterY(t,H,nowH);
+    center.push([x,y]);hwRaw.push(computeHalfWidth(t,nowH));
+  }
+
+  // 2. Smooth the half-widths (3-point moving average, endpoints unchanged).
+  const hwSmooth=[...hwRaw];
+  for(let i=1;i<hwSmooth.length-1;i++){
+    hwSmooth[i]=0.25*hwRaw[i-1]+0.5*hwRaw[i]+0.25*hwRaw[i+1];
+  }
+
+  // 3. Offset upper/lower along the local curve normal (a Figma-style offset path)
+  // instead of a vertical +/- — the band keeps a constant perpendicular thickness
+  // instead of flaring out on steep slopes, and upper/lower stay exact mirror
+  // images of one another around the centre curve at every sample.
+  const upper=[],lower=[];
+  for(let i=0;i<=steps;i++){
+    const [cx,cy]=center[i];
+    const i0=Math.max(0,i-1),i1=Math.min(steps,i+1);
+    let tx=center[i1][0]-center[i0][0],ty=center[i1][1]-center[i0][1];
+    const len=Math.sqrt(tx*tx+ty*ty)||1;
+    tx/=len;ty/=len;
+    const nx=ty,ny=-tx;
+    const hw=hwSmooth[i];
+    upper.push([cx+hw*nx,cy+hw*ny]);
+    lower.push([cx-hw*nx,cy-hw*ny]);
+  }
+
+  // Smooth quadratic curve through a point set — a taut, rope-like line with no faceted
+  // corners, instead of a raw polyline of straight lineTo segments. Used for all three
+  // curves — upper/lower symmetry is now guaranteed by the normal offset above, so they
+  // no longer need a different stroke algorithm than the centre line.
+  const smoothStrokePath=pts=>{
+    ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length-1;i++){const mx=(pts[i][0]+pts[i+1][0])/2,my=(pts[i][1]+pts[i+1][1])/2;ctx.quadraticCurveTo(pts[i][0],pts[i][1],mx,my);}
+    ctx.lineTo(pts[pts.length-1][0],pts[pts.length-1][1]);
+  };
+  const bandPath=()=>{
+    ctx.beginPath();ctx.moveTo(upper[0][0],upper[0][1]);
+    for(let i=1;i<upper.length-1;i++){const mx=(upper[i][0]+upper[i+1][0])/2,my=(upper[i][1]+upper[i+1][1])/2;ctx.quadraticCurveTo(upper[i][0],upper[i][1],mx,my);}
+    ctx.lineTo(upper[upper.length-1][0],upper[upper.length-1][1]);
+    ctx.lineTo(lower[lower.length-1][0],lower[lower.length-1][1]);
+    for(let i=lower.length-2;i>0;i--){const mx=(lower[i][0]+lower[i-1][0])/2,my=(lower[i][1]+lower[i-1][1])/2;ctx.quadraticCurveTo(lower[i][0],lower[i][1],mx,my);}
+    ctx.lineTo(lower[0][0],lower[0][1]);
+    ctx.closePath();
+  };
+  ctx.save();bandPath();ctx.clip();
+  const bandStart=upper[0],bandEnd=upper[upper.length-1];
+  const grad=ctx.createLinearGradient(bandStart[0],bandStart[1],bandEnd[0],bandEnd[1]);
+  const dayStops=waveDayGradientStops(viewStart,viewEnd,nowH,now);
+  dayStops.forEach((stop,idx)=>{
+    const prev=idx===0?0:dayStops[idx-1].pos;
+    const next=idx===dayStops.length-1?1:dayStops[idx+1].pos;
+    const pos=Math.max(prev+0.001,Math.min(next-0.001,stop.pos));
+    grad.addColorStop(pos, stop.color);
+  });
+  ctx.globalAlpha=0.88;
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  ctx.restore();
+
+  // Glossy top-edge highlight
+  ctx.save();
+  bandPath(); ctx.clip();
+  const highlightY = upper.map((p, i) => {
+    const frac = 0.12;
+    return [p[0], p[1] + (lower[i][1] - p[1]) * frac];
+  });
+  smoothStrokePath(highlightY);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(255,255,255,0.24)';
+  ctx.filter = 'blur(3px)';
+  ctx.stroke();
+  ctx.filter = 'none';
+  ctx.restore();
+
+  // Liquid caustic streaks
+  const tSec = Date.now() / 1000;
+  ctx.save();
+  bandPath(); ctx.clip();
+  ctx.globalCompositeOperation = 'screen';
+  for (let i = 0; i < 3; i++) {
+    const phase = (tSec * 0.03 + i / 3) % 1;
+    const streakPts = upper.map((p, j) => {
+      const t = viewStart + (j / steps) * (viewEnd - viewStart);
+      const offset = 0.12 + 0.08 * Math.sin(2 * Math.PI * (t / 16 + phase) + i * 2.1);
+      return [p[0], p[1] + (lower[j][1] - p[1]) * offset];
+    });
+    smoothStrokePath(streakPts);
+    ctx.lineWidth = 9 + i * 3;
+    ctx.strokeStyle = `rgba(255,255,255,${0.04 + i * 0.02})`;
+    ctx.filter = 'blur(8px)';
+    ctx.stroke();
+  }
+  ctx.filter = 'none';
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.restore();
+
+  // Bottom shadow for depth
+  ctx.save();
+  bandPath(); ctx.clip();
+  smoothStrokePath(lower);
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = 'rgba(0,0,0,0.10)';
+  ctx.filter = 'blur(4px)';
+  ctx.stroke();
+  ctx.filter = 'none';
+  ctx.restore();
+
+  ctx.lineJoin='round';ctx.lineCap='round';
+  // Draw a blurred glow behind each edge to guarantee visibility
+  [upper, lower, center].forEach(pts => {
+    smoothStrokePath(pts);
+    ctx.save();
+    ctx.filter = 'blur(2px)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.6;
+    ctx.stroke();
+    ctx.restore();
+    // Sharp front line
+    smoothStrokePath(pts);
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+    ctx.lineWidth = 0.15;
+    ctx.stroke();
+  });
+
+  // Sidequest line: revealed by a 2s long-press on the canvas. Sits a small constant
+  // offset above the centre curve, bulging further at each existing sidequest's hour
+  // to mark it — see sideQuestLineY() for the shared formula used by the click hit-test.
+  if(window.sideQuestVisible){
+    const sqPts=[];
+    for(let i=0;i<=steps;i++){
+      const t=viewStart+(i/steps)*(viewEnd-viewStart);
+      sqPts.push([hourToX(t,W),sideQuestLineY(t,H,nowH)]);
+    }
+    ctx.save();
+    ctx.strokeStyle='rgba(100,150,255,0.6)';
+    ctx.lineWidth=1;
+    smoothStrokePath(sqPts);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Task points: a chain of dots along the central curve starting at the drop hour —
+  // one filled, coloured circle per 15-min segment of the task's estimated duration,
+  // the rest outlined only. Points whose task has left the pool are simply skipped
+  // (not persisted-removed).
+  waveTasks.forEach(wt=>{
+    const task=poolTasks.find(t=>t.id===wt.taskId);
+    if(!task)return;
+    const idx=poolTasks.indexOf(task);
+    const taskColour=task._viridis||VIRIDIS[idx%VIRIDIS.length];
+    const urgency=task.urgency||1,importance=task.importance||1;
+    const radius=4+(urgency+importance-2)/8*6; // combined score 2–10 -> radius 4–10px
+    const segments=Math.ceil((task.estDuration||15)/15);
+    for(let s=0;s<segments;s++){
+      const t=wt.hour+s*0.25; // 0.25h = 15min
+      if(t<viewStart||t>viewEnd)continue;
+      const x=hourToX(t,W),y=waveCenterY(t,H,nowH);
+      ctx.beginPath();ctx.arc(x,y,s===0?radius:3,0,2*Math.PI);
+      if(s===0){
+        ctx.fillStyle=taskColour;ctx.fill();
+      }else{
+        ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=0.1;ctx.stroke();
+      }
+    }
+  });
+
+  const nx=hourToX(0,W);
+  if(nx>=0&&nx<=W){
+    ctx.beginPath();ctx.strokeStyle='rgba(20,20,20,.7)';ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.moveTo(nx,0);ctx.lineTo(nx,H);ctx.stroke();ctx.setLineDash([]);
+    if(window.introDone)drawRabbitMarker(ctx,nx,waveCenterY(0,H,nowH),1.1);
+  }
+
+  // Hour markers: absolute wall-clock time, every 3 hours (06:00, 09:00, …, 24:00 at midnight).
+  // Blackish where the label sits inside the coloured wave band, white where it falls outside it.
+  ctx.font='9px system-ui,-apple-system,sans-serif';ctx.textAlign='center';
+  const hStart=Math.ceil((nowH+viewStart)/3)*3;
+  for(let absH=hStart;absH<=nowH+viewEnd;absH+=3){
+    const t=absH-nowH;
+    if(t<viewStart||t>viewEnd)continue;
+    let hourLabel=((Math.round(absH)%24)+24)%24;if(hourLabel===0)hourLabel=24;
+    const hw=computeHalfWidth(t,nowH);
+    ctx.fillStyle=hw>=12?'rgba(20,20,20,.55)':'rgba(255,255,255,.4)';
+    ctx.fillText(String(hourLabel),hourToX(t,W),waveCenterY(t,H,nowH));
+  }
+
+  // Day boundaries: a vertical dotted line at each local midnight, with the new date
+  // written just above and to the right of the line.
+  const nowMs=now.getTime(),msPerHour=3600000;
+  const nextMidnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0,0).getTime();
+  let dayT=(nextMidnight-nowMs)/msPerHour;
+  while(dayT>viewStart+24)dayT-=24;
+  ctx.textAlign='left';ctx.fillStyle='rgba(255,255,255,.55)';
+  for(;dayT<=viewEnd;dayT+=24){
+    if(dayT<viewStart||dayT>viewEnd)continue;
+    const dx=hourToX(dayT,W);
+    ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.setLineDash([1,3]);
+    ctx.moveTo(dx,0);ctx.lineTo(dx,H);ctx.stroke();ctx.setLineDash([]);
+    const d=new Date(nowMs+dayT*msPerHour);
+    const wd=['SO','MO','DI','MI','DO','FR','SA'][d.getDay()];
+    ctx.fillText(wd+', '+pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.',dx+4,11);
+  }
+
+  ctx.restore();waveDirty=false;
+  renderWaveKnotMarkers(W,H,nowH);
+}
+
+// Ball centred horizontally above hourToX(0,W), sitting a flat 12px below the wave
+// frame's own bottom edge (not tied to the curve's y-value) — shared by the intro
+// animation's initial/roll-in placement and by the scroll/resize listeners below,
+// so the ball never drifts from the wave frame as the page moves or resizes.
+function computeBallPos(){
+  const wave=document.getElementById('wave-container');
+  const canvas=document.getElementById('wave-canvas');
+  if(!wave||!canvas)return null;
+  const waveRect=wave.getBoundingClientRect();
+  const cRect=canvas.getBoundingClientRect();
+  const nx=hourToX(0,cRect.width);
+  return{
+    right:(window.innerWidth-waveRect.left-nx-64)+'px', // 64 = half ball width, centres the ball on nx
+    top:(waveRect.bottom+12)+'px' // 12px gap below the wave frame
+  };
+}
+// Keeps the ball aligned after it has rolled in; before that, only `top` is touched
+// so the off-screen `right` start (and the roll-in transition) stay intact.
+function updateBallPosition(){
+  const ball=document.getElementById('crystal-ball');
+  const pos=computeBallPos();
+  if(!ball||!pos)return;
+  ball.style.top=pos.top;
+  if(ball.classList.contains('roll-in'))ball.style.right=pos.right;
+}
+
+// Intro sequence: the real crystal ball rolls in from off-screen right to a resting
+// spot below the wave's "now" x-position, then the rabbit inside it hops upward
+// in a few short arcs, landing near the wave, where it becomes the static canvas rabbit.
+function runIntroAnimation(){
+  const ball=document.getElementById('crystal-ball');
+  const wave=document.getElementById('wave-container');
+  const canvas=document.getElementById('wave-canvas');
+  if(!ball||!wave||!canvas)return;
+
+  const pos=computeBallPos();
+  ball.style.top=pos.top;
+
+  // The same red rabbit silhouette used on the wave, drawn small and centred in the ball.
+  const ballCanvas=document.createElement('canvas');
+  ballCanvas.id='ball-rabbit-canvas';
+  ballCanvas.width=40;ballCanvas.height=40;
+  ballCanvas.style.cssText='position:absolute;inset:0;margin:auto;';
+  ball.appendChild(ballCanvas);
+  drawRabbitOnContext(ballCanvas.getContext('2d'),20,20,1);
+
+  setTimeout(()=>{
+    const finalPos=computeBallPos();
+    ball.style.top=finalPos.top;
+    ball.style.right=finalPos.right;
+    ball.classList.add('roll-in');
+
+    setTimeout(()=>{
+      // A leaping canvas — same rabbit silhouette — that stair-hops away via a CSS
+      // keyframe animation, in place of the ball's own rabbit canvas.
+      ballCanvas.remove();
+      const leap=document.createElement('canvas');
+      leap.width=40;leap.height=40;
+      leap.style.cssText='position:fixed;width:40px;height:40px;z-index:1001;pointer-events:none;animation:rabbit-hop 1.4s ease-out forwards;';
+      leap.style.right=ball.style.right;
+      leap.style.top=ball.style.top;
+      document.body.appendChild(leap);
+      drawRabbitOnContext(leap.getContext('2d'),20,20,1);
+
+      setTimeout(()=>{
+        leap.remove();
+        window.introDone=true;
+        waveDirty=true;scheduleWaveRedraw();
+      },1400);
+    },1800); // matches the ball's new 1.8s roll-in transition
+  },1000);
+}
+
+// -- Slaydar --
+const RADAR_AXES=[{id:'sl-sleep',label:'Sleep',angle:-90},{id:'sl-energy',label:'Energy',angle:0},{id:'sl-mood',label:'Mood',angle:90},{id:'sl-stress',label:'Stress',angle:180},{id:'sl-food',label:'Food',angle:225}],R=82;
+function buildRadarAxes(){
+  const g=document.getElementById('radar-axes');if(!g)return;g.innerHTML='';
+  [.25,.5,.75,1].forEach(r=>{const el=document.createElementNS('http://www.w3.org/2000/svg','circle');el.setAttribute('cx','0');el.setAttribute('cy','0');el.setAttribute('r',R*r);el.setAttribute('fill','none');el.setAttribute('stroke','rgba(255,255,255,.14)');el.setAttribute('stroke-width','0.5');g.appendChild(el);});
+  RADAR_AXES.forEach(ax=>{const rad=ax.angle*Math.PI/180,x=R*Math.cos(rad),y=R*Math.sin(rad);const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('x1','0');ln.setAttribute('y1','0');ln.setAttribute('x2',x);ln.setAttribute('y2',y);ln.setAttribute('stroke','rgba(255,255,255,.14)');ln.setAttribute('stroke-width','0.8');g.appendChild(ln);const tx=(R+26)*Math.cos(rad),ty=(R+26)*Math.sin(rad);const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',tx);t.setAttribute('y',ty);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');t.setAttribute('font-size','12');t.setAttribute('fill','rgba(255,255,255,.6)');t.textContent=ax.label;g.appendChild(t);});
+}
+function updateRadar(){
+  const vals={};RADAR_AXES.forEach(ax=>{const el=document.getElementById(ax.id);vals[ax.id]=el?parseInt(el.value)/100:0.5;const vEl=document.getElementById('sv-'+ax.id.replace('sl-',''));if(vEl)vEl.textContent=el?el.value:50;});
+  const poly=document.getElementById('radar-poly');if(!poly)return;
+  const polyBg=document.getElementById('radar-poly-bg');
+  const pts=RADAR_AXES.map(ax=>{const v=ax.id==='sl-stress'?(1-vals[ax.id]):vals[ax.id];const rad=ax.angle*Math.PI/180;return (R*v*Math.cos(rad)).toFixed(1)+','+(R*v*Math.sin(rad)).toFixed(1);});
+  poly.setAttribute('points',pts.join(' '));
+  if(polyBg)polyBg.setAttribute('points',pts.join(' '));
+  currentV=(vals['sl-sleep']*0.3+vals['sl-energy']*0.25+(1-vals['sl-stress'])*0.2+vals['sl-mood']*0.15+vals['sl-food']*0.1);
+  const vEl=document.getElementById('v-val');if(vEl)vEl.textContent=Math.round(currentV*100)+'%';
+}
+let editingKnotT=null;
+function openSlaydar(knot=null){
+  const ov=document.getElementById('slaydar-overlay');if(!ov)return;
+  buildRadarAxes();RADAR_AXES.forEach(ax=>{const el=document.getElementById(ax.id);if(el)el.oninput=updateRadar;});
+  editingKnotT=knot?knot.t:null;
+  if(knot&&knot.sliders){
+    const setVal=(id,v)=>{const el=document.getElementById(id);if(el&&typeof v==='number')el.value=v;};
+    setVal('sl-sleep',knot.sliders.sleep);setVal('sl-energy',knot.sliders.energy);
+    setVal('sl-stress',knot.sliders.stress);setVal('sl-mood',knot.sliders.mood);setVal('sl-food',knot.sliders.food);
+  }
+  updateRadar();ov.style.display='flex';
+  // (Re)wire close controls every open so they always work
+  const closeBtn=document.getElementById('slaydar-close');
+  if(closeBtn)closeBtn.onclick=closeSlaydar;
+  const saveBtn=document.getElementById('save-knot-btn');
+  if(saveBtn)saveBtn.onclick=()=>{addKnotAtTime(editingKnotT!==null?editingKnotT:0);closeSlaydar();showBnr('Vibe knot saved. The wave knows.');};
+  ov.onclick=(e)=>{if(e.target===ov)closeSlaydar();};
+  if(closeBtn)closeBtn.focus();
+  document.addEventListener('keydown',slaydarEsc);
+}
+function closeSlaydar(){
+  const ov=document.getElementById('slaydar-overlay');if(ov)ov.style.display='none';
+  document.removeEventListener('keydown',slaydarEsc);waveDirty=true;scheduleWaveRedraw();
+}
+function slaydarEsc(e){if(e.key==='Escape')closeSlaydar();}
+document.getElementById('btn-slaydar')?.addEventListener('click',openSlaydar);
+document.getElementById('slaydar-close')?.addEventListener('click',closeSlaydar);
+document.getElementById('save-knot-btn')?.addEventListener('click',()=>{addKnotAtTime(0);closeSlaydar();showBnr('Vibe knot saved. The wave knows.');});
+
+// -- Crystal Ball --
+function getActiveReceptionist(){
+  const now=new Date(),day=now.getDay()||7,h=now.getHours()+now.getMinutes()/60;
+  const shifts=ballSettings.shifts||{gouvernante:[{days:[1,2,3,4,5],start:9,end:13},{days:[1,2,3,4,5],start:14,end:16}],hedonizer:'otherwise'};
+  if(shifts.gouvernante){for(const s of shifts.gouvernante){if(s.days.includes(day)&&h>=s.start&&h<s.end)return'gouvernante';}}
+  return'hedonizer';
+}
+function getBreakMinutes(){
+  const wm=ballWorkMinutes;if(wm<45)return 0;if(wm<90)return Math.round(15*ballSettings.breakRatio);if(wm<270)return Math.round((15+(wm-90)/12)*ballSettings.breakRatio);return Math.round(120*ballSettings.breakRatio);
+}
+function getRecommendations(){
+  const now=new Date(),h=now.getHours()+now.getMinutes()/60;
+  const isDeepWork=inFixedWindow(h,ballSettings.deepWorkWindows,2),isDistracted=inFixedWindow(h,ballSettings.distractionWindows,2);
+  const recep=getActiveReceptionist();
+  let candidates=poolTasks.filter(t=>{if(t.status==='completed')return false;const ec=ENERGY_NUM[t.estEnergyCost]||0.6;if(ec>currentV+0.25)return false;if(isDeepWork&&(t.estDuration||15)>30)return false;if(isDistracted&&((t.estDuration||15)>20||t.category!=='enjoyable'))return false;return true;});
+  const scored=candidates.map(t=>{const ec=ENERGY_NUM[t.estEnergyCost]||0.6;const catMatch=(recep==='gouvernante'&&t.category==='should')||(recep==='hedonizer'&&t.category==='enjoyable')?1:0;const prio=((t.urgency||1)+(t.importance||1))/10;return{task:t,score:0.4*prio+0.3*(1-Math.abs(currentV-ec))+0.2*catMatch+0.1*Math.random()};}).sort((a,b)=>b.score-a.score);
+  const top=scored.slice(0,3).map(s=>s.task);
+  const bm=getBreakMinutes();
+  if(bm>0&&top.length>2)top[2]={id:'break',text:'Take a '+bm+'-min break',estDuration:bm,category:'enjoyable',estEnergyCost:'low',_isBreak:true};
+  return top;
+}
+function updateCrystalBallDisplay(){
+  const el=document.getElementById('cb-count');
+  if(!el)return;
+  const recs=getRecommendations();
+  if(recs.length>0&&recs[0]){
+    el.textContent=recs[0]._isBreak?'brk':recs[0].text.slice(0,12);
+    el.title=recs[0].text;
+  }else{
+    el.textContent='—';
+    el.title='No tasks available';
+  }
+}
+function renderCrystalBall(){updateCrystalBallDisplay();}
+function renderCBRecommendations(panel,recs){
+  if(!recs.length){const m=document.createElement('div');m.style.cssText='font-size:12px;color:rgba(255,255,255,.45);padding:8px 0;';m.textContent='No beacons match now. One endorses a break.';panel.appendChild(m);return;}
+  recs.forEach(task=>{if(!task)return;const card=document.createElement('div');card.className='cb-task-card';const nm=document.createElement('div');nm.className='cb-task-name';nm.textContent=task.text;const meta=document.createElement('div');meta.className='cb-task-meta';meta.textContent=(task.estDuration||15)+'min \u00b7 '+(task.estEnergyCost||'medium')+' \u00b7 '+(task.category||'should');const btn=document.createElement('button');btn.className='cb-start-btn';btn.textContent='Start';btn.onclick=()=>{startBallTask(task);closeCrystalBall();};card.append(nm,meta,btn);panel.appendChild(card);});
+}
+function cbHeaderHTML(){const recep=getActiveReceptionist();return '<div class="cb-header"><span class="cb-title">Oracle \u00b7 '+(recep==='gouvernante'?'Gouvernante':'Hedonizer')+' \u00b7 V='+Math.round(currentV*100)+'%</span><button class="cb-close" aria-label="Close">\u00d7</button></div><div class="cb-v-bar" style="width:'+Math.round(currentV*100)+'%"></div>';}
+
+// -- Side-Jester panel (list view of sideQuests, reachable from the crystal ball's
+// full panel only \u2014 cbHeaderHTML() above is shared with the small popup, so the
+// sidejester button is inserted via DOM after the fact rather than baked into it). --
+function sjEsc(e){if(e.key==='Escape')closeSideJester();}
+function openSideJester(){
+  if(cbOpen)closeCrystalBall();
+  const panel=document.getElementById('sidejester-panel');if(!panel)return;
+  renderSideJester();
+  panel.style.display='flex';
+  document.addEventListener('keydown',sjEsc);
+  panel.querySelector('.cb-close').onclick=closeSideJester;
+}
+function closeSideJester(){
+  const panel=document.getElementById('sidejester-panel');if(panel)panel.style.display='none';
+  document.removeEventListener('keydown',sjEsc);
+}
+function renderSideJester(){
+  const list=document.getElementById('sj-list');
+  const remaining=document.getElementById('sj-remaining');
+  if(!list||!remaining)return;
+  remaining.textContent=Math.max(0,sideQuestRemainingMinutes());
+  list.innerHTML='';
+  // Built via DOM/textContent rather than innerHTML template strings \u2014 sq.text is
+  // free-typed user input, so interpolating it into innerHTML would be an XSS vector.
+  sideQuests.forEach(sq=>{
+    const item=document.createElement('div');item.className='sj-item';
+    const info=document.createElement('div');
+    const title=document.createElement('div');title.textContent=sq.text||'Unnamed sidequest';
+    const meta=document.createElement('div');meta.className='sj-item-meta';
+    meta.textContent=(sq.duration||15)+'min \u00b7 fun: '+(sq.fun||3)+'/5'+(sq.important?' \u00b7 important':'');
+    info.append(title,meta);
+    const del=document.createElement('button');del.className='sj-item-del';del.textContent='\u00d7';del.dataset.id=sq.id;
+    del.onclick=()=>{sideQuests=sideQuests.filter(s=>s.id!==sq.id);saveSideQuests();renderSideJester();};
+    item.append(info,del);
+    list.appendChild(item);
+  });
+}
+document.getElementById('sj-add-btn')?.addEventListener('click',()=>{
+  const textEl=document.getElementById('sj-add-text'),durEl=document.getElementById('sj-add-dur');
+  const text=textEl.value.trim();const dur=parseInt(durEl.value)||15;
+  if(!text)return;
+  sideQuests.push({id:'sq'+Date.now(),t:0,text,duration:dur,fun:3,learned:'',important:false,goals:'',createdAt:new Date().toISOString()});
+  saveSideQuests();renderSideJester();
+  textEl.value='';durEl.value='15';
+});
+function openCrystalBallFull(){
+  cbOpen=true;const panel=document.getElementById('cb-panel');if(!panel)return;
+  const recs=getRecommendations();
+  panel.innerHTML=cbHeaderHTML()+
+    '<div class="cb-add-form">'+
+      '<input id="cb-add-input" type="text" placeholder="new beacon\u2026" aria-label="Add a beacon">'+
+      '<div class="tap-edit-row"><label>Duration (min)</label><input id="cb-add-dur" type="number" min="5" step="5" value="15"></div>'+
+      '<div class="tap-edit-row"><label>Energy</label><select id="cb-add-energy"><option value="low">low</option><option value="medium" selected>medium</option><option value="high">high</option></select></div>'+
+      '<div class="tap-edit-row"><label>Urgency</label><input id="cb-add-urg" type="number" min="1" max="5" value="1"></div>'+
+      '<div class="tap-edit-row"><label>Importance</label><input id="cb-add-imp" type="number" min="1" max="5" value="1"></div>'+
+      '<div class="tap-edit-row"><label>Category</label><select id="cb-add-cat"><option value="should" selected>should</option><option value="enjoyable">enjoyable</option></select></div>'+
+      '<button id="cb-add-btn" class="cb-start-btn">+ add</button>'+
+    '</div>'+
+    '<div class="cb-section-title">Top picks</div>';
+  panel.querySelector('.cb-close').onclick=closeCrystalBall;
+  const cbHeaderEl=panel.querySelector('.cb-header');
+  if(cbHeaderEl){
+    const sjBtn=document.createElement('button');
+    sjBtn.id='cb-sidejester-btn';sjBtn.className='cb-sidejester-btn';
+    sjBtn.setAttribute('aria-label','Open Side-Jester');sjBtn.textContent='🤡';
+    sjBtn.addEventListener('click',ev=>{ev.stopPropagation();openSideJester();});
+    cbHeaderEl.insertBefore(sjBtn,cbHeaderEl.querySelector('.cb-close'));
+  }
+  const addInput=panel.querySelector('#cb-add-input'),addBtn=panel.querySelector('#cb-add-btn');
+  const addTaskFromBall=()=>{
+    const text=addInput.value.trim();if(!text)return;
+    poolTasks.push({
+      id:'p'+Date.now(),text,color:null,createdAt:Date.now(),
+      estDuration:parseInt(document.getElementById('cb-add-dur').value)||15,
+      estEnergyCost:document.getElementById('cb-add-energy').value,
+      urgency:parseInt(document.getElementById('cb-add-urg').value)||1,
+      importance:parseInt(document.getElementById('cb-add-imp').value)||1,
+      category:document.getElementById('cb-add-cat').value,
+      tags:[],status:'pending'
+    });
+    savePool();renderPoolSidebar();renderCrystalBall();
+    openCrystalBallFull();
+    document.getElementById('cb-add-input')?.focus();
+  };
+  addBtn.onclick=addTaskFromBall;
+  addInput.onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();addTaskFromBall();}};
+  renderCBRecommendations(panel,recs);
+  if(poolTasks.length>0){
+    const sep=document.createElement('div');sep.className='cb-section-title';sep.textContent='All beacons ('+poolTasks.length+')';panel.appendChild(sep);
+    poolTasks.forEach(task=>{
+      const item=document.createElement('div');item.className='cb-pool-item';
+      const lbl=document.createElement('span');lbl.textContent=task.text+' ('+(task.estDuration||15)+'min \u00b7 '+task.category+')';
+      const moreBtn=document.createElement('button');moreBtn.className='pill-more';moreBtn.textContent='\u22ef';moreBtn.setAttribute('aria-label','Beacon actions');
+      moreBtn.onclick=ev=>{
+        ev.stopPropagation();
+        openTaskActions(task,moreBtn,
+          ()=>{savePool();renderPoolSidebar();renderCrystalBall();openCrystalBallFull();},
+          ()=>{poolTasks=poolTasks.filter(t=>t.id!==task.id);savePool();renderPoolSidebar();renderCrystalBall();openCrystalBallFull();}
+        );
+      };
+      const btn=document.createElement('button');btn.className='cb-start-btn';btn.textContent='Start';btn.onclick=()=>{startBallTask(task);closeCrystalBall();};
+      const actions=document.createElement('div');actions.style.cssText='display:flex;align-items:center;gap:6px;flex-shrink:0;';
+      actions.append(moreBtn,btn);
+      item.append(lbl,actions);panel.appendChild(item);
+    });
+  }
+  panel.style.display='flex';document.addEventListener('keydown',cbEsc);
+}
+function closeCrystalBall(){cbOpen=false;const p=document.getElementById('cb-panel');if(p)p.style.display='none';document.removeEventListener('keydown',cbEsc);}
+function cbEsc(e){if(e.key==='Escape')closeCrystalBall();}
+
+function startBallTask(task){
+  if(ballTimer&&ballTimer.state==='running'){ballTimer.state='done';}
+  if(!task._isBreak){task.status='started';savePool();}
+  ballTimerTask=task;ballTimer={dur:(task.estDuration||15)*60,elapsed:0,state:'running'};
+  engineStart();
+  const fo=document.getElementById('fo');document.getElementById('fo-wbt').textContent=task._isBreak?'break':'focus';
+  document.getElementById('fo-cd-text').textContent=fmtd(ballTimer.dur);
+  const foTask=document.getElementById('fo-task');if(foTask)foTask.textContent=task.text;
+  document.getElementById('fo-hint').textContent=task._isBreak?'Rest & recover':'Focus time';
+  document.getElementById('fo-hint').style.display='block';
+  document.getElementById('fo-btns').innerHTML='<button class="fo-btn" id="fo-pause-btn">pause</button><button class="fo-btn" id="fo-stop-btn">stop</button>';
+  document.getElementById('fo-pause-btn').onclick=pauseBallTask;
+  document.getElementById('fo-stop-btn').onclick=stopFocusTimer;
+  syncTimerControlButtons();
+  syncCrystalBallButtons();
+  fo.className='on m0'+(fo.classList.contains('mini')?' mini':'');
+  syncFocusSizeBtn();
+  focusTid=null;
+  document.addEventListener('keydown',ballFocusEsc);
+  if(Notification.permission==='default')Notification.requestPermission();
+}
+function pauseBallTask(){
+  if(!ballTimer||ballTimer.state!=='running')return;
+  ballTimer.state='paused';
+  syncTimerControlButtons();
+  syncCrystalBallButtons();
+  document.getElementById('fo-pause-btn').onclick=resumeBallTask;
+}
+function resumeBallTask(){
+  if(!ballTimer||ballTimer.state!=='paused')return;
+  ballTimer.state='running';engineStart();
+  syncTimerControlButtons();
+  syncCrystalBallButtons();
+  document.getElementById('fo-pause-btn').onclick=pauseBallTask;
+}
+function completeBallTask(){
+  if(!ballTimer||!ballTimerTask)return;
+  const task=ballTimerTask;
+  ballTimer.state='done';ballTimer=null;
+  if(!task._isBreak){ballWorkMinutes+=task.estDuration||15;}
+  else{ballWorkMinutes=0;}
+  const now=new Date();const totalMin=now.getHours()*60+now.getMinutes();
+  let bestWb=Object.values(wbMap).find(wb=>wb.sm<=totalMin&&totalMin<wb.sm+15);
+  if(!bestWb){let minDiff=Infinity;Object.values(wbMap).forEach(wb=>{const d=Math.abs(wb.sm-totalMin);if(d<minDiff){minDiff=d;bestWb=wb;}});}
+  if(bestWb&&!task._isBreak){
+    const entry={id:'n'+Date.now(),client:task.text,notes:'via oracle',est:String(task.estDuration||15)+"'",color:null};
+    bestWb.entries.push(entry);onEntryChanged(bestWb);
+  }
+  if(!task._isBreak&&task.id!=='break'){
+    // Task stays in the pool after use — it just moves from Beacons (pending/started)
+    // to Traces (completed): still listed in "All tasks", excluded from Beacons/recs.
+    task.status='completed';
+    savePool();renderPoolSidebar();renderCrystalBall();
+  }
+  hideFocus();ballTimerTask=null;syncCrystalBallButtons();
+  showBnr('\u2713 '+(task._isBreak?'Break done. Refreshed.':task.text+' complete'));
+}
+function ballFocusEsc(e){if(e.key==='Escape'){if(ballTimer&&ballTimer.state==='running')pauseBallTask();else hideFocus();}}
+
+document.getElementById('crystal-ball')?.addEventListener('click',()=>{
+  cbOpen?closeCrystalBall():openCrystalBallFull();
+});
+
+// -- Ball settings --
+function openBallSettings(){
+  const p=document.getElementById('ball-settings-panel');if(!p)return;
+  let dwWindows=(ballSettings.deepWorkWindows||[]).map(w=>({start:w.start}));
+  let distWindows=(ballSettings.distractionWindows||[]).map(w=>({start:w.start}));
+  p.innerHTML=
+    '<div class="cb-header"><span class="cb-title">Focus Settings</span><button class="cb-close" aria-label="Close">\u00d7</button></div>'+
+    '<div class="bs-row"><label>Awake</label><input type="time" id="bs-awake-start"> \u2013 <input type="time" id="bs-awake-end"></div>'+
+    '<div class="bs-section-title">Deep work windows (2h each)</div>'+
+    '<div id="bs-dw-list" class="bs-win-list"></div>'+
+    '<button class="bs-add-btn" id="bs-dw-add" type="button">+ add window</button>'+
+    '<div class="bs-section-title">Distracted hours (2h each)</div>'+
+    '<div id="bs-dist-list" class="bs-win-list"></div>'+
+    '<button class="bs-add-btn" id="bs-dist-add" type="button">+ add window</button>'+
+    '<div class="bs-row"><label>Sidequest budget (min)</label><input type="number" id="bs-sidequest-budget" min="0" step="15"></div>'+
+    '<button class="bs-save-btn" id="bs-save">Save</button>';
+  document.getElementById('bs-awake-start').value=decToHHMM(ballSettings.awakeStart);
+  document.getElementById('bs-awake-end').value=decToHHMM(ballSettings.awakeEnd);
+  document.getElementById('bs-sidequest-budget').value=ballSettings.sideQuestBudget||300;
+  p.querySelector('.cb-close').onclick=closeBallSettings;
+
+  function renderWinList(containerId,windows,onRemove){
+    const c=document.getElementById(containerId);c.innerHTML='';
+    windows.forEach((w,idx)=>{
+      const row=document.createElement('div');row.className='bs-win-row';
+      const inp=document.createElement('input');inp.type='time';inp.value=decToHHMM(w.start);inp.className='bs-win-start';
+      inp.onchange=()=>{w.start=hhmmToDec(inp.value);};
+      const plus=document.createElement('span');plus.className='bs-win-plus';plus.textContent='+2h';
+      const del=document.createElement('button');del.className='ef-del';del.textContent='\u00d7';del.setAttribute('aria-label','Remove window');
+      del.onclick=()=>onRemove(idx);
+      row.append(inp,plus,del);c.appendChild(row);
+    });
+  }
+  const renderDW=()=>renderWinList('bs-dw-list',dwWindows,idx=>{dwWindows.splice(idx,1);renderDW();});
+  const renderDist=()=>renderWinList('bs-dist-list',distWindows,idx=>{distWindows.splice(idx,1);renderDist();});
+  renderDW();renderDist();
+  document.getElementById('bs-dw-add').onclick=()=>{dwWindows.push({start:9});renderDW();};
+  document.getElementById('bs-dist-add').onclick=()=>{distWindows.push({start:13});renderDist();};
+
+  p.querySelector('#bs-save').onclick=()=>{
+    const awS=document.getElementById('bs-awake-start').value,awE=document.getElementById('bs-awake-end').value;
+    ballSettings.awakeStart=awS?hhmmToDec(awS):7;
+    ballSettings.awakeEnd=awE?hhmmToDec(awE):23;
+    ballSettings.deepWorkWindows=dwWindows.map(w=>({start:w.start}));
+    ballSettings.distractionWindows=distWindows.map(w=>({start:w.start}));
+    ballSettings.sideQuestBudget=parseInt(document.getElementById('bs-sidequest-budget').value)||300;
+    saveBallSettings();closeBallSettings();showBnr('Focus settings saved.');
+    waveDirty=true;scheduleWaveRedraw();
+  };
+  p.style.display='flex';document.addEventListener('keydown',bsEsc);
+}
+function closeBallSettings(){const p=document.getElementById('ball-settings-panel');if(p)p.style.display='none';document.removeEventListener('keydown',bsEsc);}
+function bsEsc(e){if(e.key==='Escape')closeBallSettings();}
+document.getElementById('btn-settings')?.addEventListener('click',openBallSettings);
+
+// -- Break overlay --
+function getActiveBreakBlock(){const mins=new Date().getHours()*60+new Date().getMinutes();return blocks.find(b=>b.type==='pause'&&mins>=b.sm&&mins<b.em)||null;}
+function checkBreakOverlay(){
+  const ticker=document.getElementById('break-ticker');if(!ticker)return;
+  const active=getActiveBreakBlock();
+  if(active){ticker.classList.add('show');}
+  else{ticker.classList.remove('show');}
+}
+
+// -- Info ticker --
+(function() {
+  const bnr = document.getElementById('bnr');
+  const toggle = document.getElementById('ticker-toggle');
+  if (!bnr || !toggle) return;
+  toggle.addEventListener('click', () => {
+    const open = bnr.classList.toggle('ticker-open');
+    toggle.textContent = open ? '×' : 'i';
+    toggle.setAttribute('aria-label', open ? 'Close ADHD info' : 'Open ADHD info');
+  });
+})();
+
+// -- Jester peek: re-checks remaining sidequest budget each cycle (rather than a fixed
+// setInterval locked to whatever the budget happened to be at page load) so the peek
+// speeds up to every 90s as soon as the budget actually drops under an hour remaining.
+function scheduleJesterPeek(){
+  const delay=sideQuestRemainingMinutes()<60?90000:300000;
+  setTimeout(()=>{
+    const jester=document.getElementById('jester-emoji');
+    const tickerTerms=document.getElementById('ticker-terms');
+    if(jester&&tickerTerms){
+      jester.style.display='inline';
+      tickerTerms.querySelectorAll('a').forEach(a=>{a.style.display='none';});
+      setTimeout(()=>{
+        jester.style.display='none';
+        tickerTerms.querySelectorAll('a').forEach(a=>{a.style.display='';});
+      },15000);
+    }
+    scheduleJesterPeek();
+  },delay);
+}
+scheduleJesterPeek();
+
+// -- Bootstrap --
+buildDay();load();loadPool();loadVitalityData();loadSideQuests();renderDay();renderPoolSidebar();renderCrystalBall();updateDayProgress();
+setInterval(updateCrystalBallDisplay,60000);
+setInterval(checkBreakOverlay,60000);
+checkBreakOverlay();
+initWaveCanvas();
+waveTransform.hoursVisible=12;waveTransform.center=0;clampWaveView();waveDirty=true;scheduleWaveRedraw();
+runIntroAnimation();
+window.addEventListener('scroll',updateBallPosition,{passive:true});
+window.addEventListener('resize',()=>{updateBallPosition();waveDirty=true;scheduleWaveRedraw();});
+</script>
+
+<div id="break-ticker" class="break-ticker"><span id="break-ticker-text">BREAK&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;BREAK&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;BREAK&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;BREAK&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;BREAK</span></div>
+
+</body>
+</html>
